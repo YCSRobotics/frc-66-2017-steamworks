@@ -17,28 +17,32 @@ args = vars(ap.parse_args())
 
 while True:
 
-	cap = cv2.VideoCapture('http://10.4.70.87/mjpg/video.mjpg')	
-	_, im = cap.read()
+	try:
+		cap = cv2.VideoCapture('http://10.4.70.87/mjpg/video.mjpg')	
+		_, im = cap.read()
+		
+		gray = cv2.cvtColor(im,cv2.COLOR_BGR2HSV);
 	
-	gray = cv2.cvtColor(im,cv2.COLOR_BGR2HSV);
+		greenLower = (29, 86, 6)
+		greenUpper = (64, 255, 255)
+	
+		bin = cv2.inRange(gray, greenLower, greenUpper)
+	
+		bin = cv2.dilate(bin, None)  # fill some holes
+		bin = cv2.dilate(bin, None)
+		bin = cv2.erode(bin, None)   # dilate made our shape larger, revert that
+		bin = cv2.erode(bin, None)
+		bin, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	
+		rc = cv2.minAreaRect(contours[0])
+		box = cv2.boxPoints(rc)
+		for p in box:
+	          pt = (p[0],p[1])
+	          print(pt)
 
-	greenLower = (29, 86, 6)
-	greenUpper = (64, 255, 255)
+	except IndexError:
+		#do nothing
+		print("No contours found")
 
-	bin = cv2.inRange(gray, greenLower, greenUpper)
-
-	bin = cv2.dilate(bin, None)  # fill some holes
-	bin = cv2.dilate(bin, None)
-	bin = cv2.erode(bin, None)   # dilate made our shape larger, revert that
-	bin = cv2.erode(bin, None)
-	bin, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-	rc = cv2.minAreaRect(contours[0])
-	box = cv2.boxPoints(rc)
-	for p in box:
-          pt = (p[0],p[1])
-          print(pt)
-
-	Table.putNumberArray("arrayValue", pt)
-
+Table.putNumberArray("arrayValue", pt)
 cap.release()

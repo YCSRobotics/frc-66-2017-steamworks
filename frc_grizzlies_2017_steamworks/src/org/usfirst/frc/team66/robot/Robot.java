@@ -18,7 +18,6 @@ public class Robot extends IterativeRobot {
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
 	 public static Drivetrain DRIVETRAIN;
-	 public NetworkTables piTable;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -75,7 +74,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		DRIVETRAIN.updateDrivetrainTeleop();
-		piTable.getPiValues();
+		NetworkTables.getPiValues();
 		
 	}
 

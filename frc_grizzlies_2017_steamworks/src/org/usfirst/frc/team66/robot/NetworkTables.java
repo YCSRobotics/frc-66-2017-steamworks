@@ -14,8 +14,7 @@ public class NetworkTables {
 		
 	}
 	
-	public void getPiValues() {
-		
+	public static void getPiValues() {
 		
 		NetworkTable table = NetworkTable.getTable("table");
 		
@@ -24,7 +23,7 @@ public class NetworkTables {
 		double[] piData;
 		
 		//if tables contains key else
-		if(table.containsKey("x") == true) {
+		if(table.containsKey("arrayValue") == true) {
 			
 			//getNumberArray Values
 			piData = table.getNumberArray("arrayValue", arrayDefault);

@@ -32,11 +32,14 @@ public class Drivetrain {
 		leftSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
 		leftSlaveMotor.set(leftMasterMotor.getDeviceID());
 		
+		leftEncoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
+		
 		rightMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		rightMasterMotor.setVoltageRampRate(Constants.DRIVE_RAMP_RATE);
 		rightSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rightSlaveMotor.set(rightMasterMotor.getDeviceID());
 		
+		rightEncoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);	
 	}
 	
 	public void updateDrivetrainTeleop() {
@@ -97,8 +100,10 @@ public class Drivetrain {
 	}
 	
 	private void updateDashboard(){
-		SmartDashboard.putNumber("Left Encoder Counts", leftEncoder.getRaw());
-		SmartDashboard.putNumber("Right Encoder Counts", rightEncoder.getRaw());
+		SmartDashboard.putNumber("Left Encoder Counts", leftEncoder.get());
+		SmartDashboard.putNumber("Right Encoder Counts", rightEncoder.get());
+		SmartDashboard.putNumber("Left Wheel Distance", leftEncoder.getDistance());
+		SmartDashboard.putNumber("Right Wheel Distance", rightEncoder.getDistance());
 		SmartDashboard.putBoolean("Inverted", isInverted);
 		SmartDashboard.putBoolean("Invert Button Pressed", isInvertPressed);
 		

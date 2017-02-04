@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Constants {
 	
+	//Real World Constants
+	public static final double PI = 3.14159;
+	public static final double G  = 9.81; //acceleration due to Earth's gravity in m/s^2
+	
 	//Controllers
 	public static final Joystick DRIVE_CONTROLLER = new Joystick(0); //Drive
 	public static final Joystick OP_CONTROLLER = new Joystick(1); //Operator
@@ -20,24 +24,30 @@ public class Constants {
 	public static final int BACK_BUTTON   = 7;
 	public static final int A_BUTTON      = 1;
 	
-	//DIO
+	//DIO	
 	
-	public static final int LEFT_ENCODER_CHANNEL_A  = 0;
-	public static final int LEFT_ENCODER_CHANNEL_B  = 1;
-	public static final int RIGHT_ENCODER_CHANNEL_A = 2;
-	public static final int RIGHT_ENCODER_CHANNEL_B = 3;	
-	
-	//Drivetrain
-	//Slave motor should be master(id) plus 1
+	//Drivetrain Config
 	public static final CANTalon LEFT_MASTER_MOTOR  = new CANTalon(0);
 	public static final CANTalon LEFT_SLAVE_MOTOR   = new CANTalon(1);
 	public static final CANTalon RIGHT_MASTER_MOTOR = new CANTalon(2);
 	public static final CANTalon RIGHT_SLAVE_MOTOR  = new CANTalon(3);
 	
 	public static final boolean LEFT_DRIVE_REVERSED   = false;
-	public static final boolean LEFT_ENCODER_REVERSED  = true;
 	public static final boolean RIGHT_DRIVE_REVERSED  = true;
+	
+	//Encoder Config
+	public static final int LEFT_ENCODER_CHANNEL_A  = 0;
+	public static final int LEFT_ENCODER_CHANNEL_B  = 1;
+	public static final int RIGHT_ENCODER_CHANNEL_A = 2;
+	public static final int RIGHT_ENCODER_CHANNEL_B = 3;
+	
+	public static final boolean LEFT_ENCODER_REVERSED  = true;
 	public static final boolean RIGHT_ENCODER_REVERSED = false;
+	
+	public static final double ENCODER_PULSES_PER_REV     = 360;
+	public static final double WHEEL_DIAMETER             = 6.0; //diameter of wheels in inches. Practice bot 6", Comp bot
+	public static final double DRIVETRAIN_MULTIPLIER      = 5.4; // Ratio of encoder revs to wheel revs, 54:30 x 36:12
+	public static final double ENCODER_DISTANCE_PER_PULSE = (WHEEL_DIAMETER*PI)/(ENCODER_PULSES_PER_REV*DRIVETRAIN_MULTIPLIER);
 	
 	public static final Encoder LEFT_WHEEL_ENCODER = new Encoder(LEFT_ENCODER_CHANNEL_A, 
 			                                                     LEFT_ENCODER_CHANNEL_B,

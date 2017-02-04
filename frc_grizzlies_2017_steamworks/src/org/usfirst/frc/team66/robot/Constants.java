@@ -52,7 +52,12 @@ public class Constants {
 	public static final double LEFT_MOTOR_SCALER = -1.0;
 	public static final double RIGHT_MOTOR_SCALER = 1.0;
 	
-	public static final int DRIVETRAIN_RAMPING_FACTOR = 10;
+	public static final double MIN_TALON_RAMP_RATE = 1.173;//This is the min ramp rate per CTRE documentation
+	
+	public static final boolean RAMP_ENABLED       = true;
+	public static final double DRIVE_RAMP_TIME     = 0.25;//This is the time to ramp from 0V to +/-12V in sec
+	public static final double DRIVE_RAMP_RATE     = (RAMP_ENABLED ? (Math.max(MIN_TALON_RAMP_RATE, 
+													 	(12/DRIVE_RAMP_TIME))) : 0.0);
 	
 	public static final double DEAD_ZONE_LIMIT = 0.3;
 	public static final double TRIGGER_ACTIVE_THRESHOLD = 0.5;

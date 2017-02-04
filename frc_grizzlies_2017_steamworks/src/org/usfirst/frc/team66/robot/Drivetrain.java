@@ -28,10 +28,12 @@ public class Drivetrain {
 	public Drivetrain() {		
 		
 		leftMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		leftMasterMotor.setVoltageRampRate(Constants.DRIVE_RAMP_RATE);
 		leftSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
 		leftSlaveMotor.set(leftMasterMotor.getDeviceID());
 		
 		rightMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		rightMasterMotor.setVoltageRampRate(Constants.DRIVE_RAMP_RATE);
 		rightSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
 		rightSlaveMotor.set(rightMasterMotor.getDeviceID());
 		

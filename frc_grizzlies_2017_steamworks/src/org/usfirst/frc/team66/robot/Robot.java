@@ -74,6 +74,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		DRIVETRAIN.updateDrivetrainTeleop();
+		NetworkTables.getPiValues();
 		
 	}
 

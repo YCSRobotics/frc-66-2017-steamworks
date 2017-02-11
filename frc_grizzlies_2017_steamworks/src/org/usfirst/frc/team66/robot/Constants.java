@@ -45,6 +45,8 @@ public class Constants {
 	public static final double DRIVE_RAMP_RATE     = (RAMP_ENABLED ? (Math.max(MIN_TALON_RAMP_RATE, 
 													 	(12/DRIVE_RAMP_TIME))) : 0.0);
 	
+	public static final double TARGET_DISTANCE_THRESHOLD = 6.0; 
+	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
 	

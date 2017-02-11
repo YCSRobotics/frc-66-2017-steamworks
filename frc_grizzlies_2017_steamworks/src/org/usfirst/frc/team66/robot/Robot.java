@@ -12,12 +12,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	
 	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
+	final String crossBaselineAuto = "Cross Baseline";
+	final String placeCenterGearAuto = "Place Center Gear";
+	final String placeRightGearAuto = "Place Right Gear";
+	final String placeLeftGearAuto = "Place Left Gear";
+	
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
-	 public static Drivetrain DRIVETRAIN;
+	public static Drivetrain DRIVETRAIN;
+	public static AutonSupervisor AUTON_SUPERVISOR;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -25,10 +31,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
+		chooser.addDefault("Do Nothing", defaultAuto);
+		chooser.addObject("Cross Baseline", crossBaselineAuto);
+		chooser.addObject("Place Center Gear", placeCenterGearAuto);
+		chooser.addObject("Place Right Gear", placeRightGearAuto);
+		chooser.addObject("Place Left Gear", placeLeftGearAuto);
+		
 		SmartDashboard.putData("Auto choices", chooser);
 		
+		AUTON_SUPERVISOR = new AutonSupervisor();
 		DRIVETRAIN = new Drivetrain();
 	}
 
@@ -48,6 +59,27 @@ public class Robot extends IterativeRobot {
 		autoSelected = chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
+		
+		//Select Autonomous Routine from Dashboard
+		switch (autoSelected) {
+		case crossBaselineAuto:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.CROSS_BASELINE);
+			break;
+		case placeCenterGearAuto:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.PLACE_CENTER_GEAR);
+			break;
+		case placeRightGearAuto:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.PLACE_RIGHT_GEAR);
+			break;
+		case placeLeftGearAuto:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.PLACE_LEFT_GEAR);
+			break;
+		case defaultAuto:
+		default:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.DO_NOTHING);
+			break;
+		}
+		
 		System.out.println("Auto selected: " + autoSelected);
 	}
 
@@ -56,15 +88,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
-		default:
-			// Put default auto code here
-			break;
-		}
+		
+		AUTON_SUPERVISOR.updateAutonomous();
+		DRIVETRAIN.updateDrivetrainAuton();
+		
 	}
 
 	/**

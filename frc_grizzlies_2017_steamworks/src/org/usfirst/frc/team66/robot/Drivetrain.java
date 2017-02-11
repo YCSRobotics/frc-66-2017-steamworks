@@ -23,7 +23,7 @@ public class Drivetrain {
 	
 	private static ADXRS450_Gyro gyro = Constants.GYRO;
 	
-	private double targetThrottle = 0.0;
+	private static double targetThrottle = 0.0;
 	private double targetTurn = 0.0;
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
@@ -33,11 +33,10 @@ public class Drivetrain {
 	private boolean isInvertPressed = false;
 	
 	private boolean isGyroZeroed = false;
-	
 	private boolean isDriveStraight = false;
 	
-	private double goStraightThrottle = 0.0;
-	private double goStraightTurn = 0.0;
+	private static double targetDistance = 0.0;
+	private static boolean isMovingDistance = false;
 	
 	public Drivetrain() {		
 		
@@ -56,6 +55,36 @@ public class Drivetrain {
 		rightEncoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		
 		gyro.calibrate();
+	}
+	
+	public void updateDrivetrainAuton(){
+		double distance_error;
+		
+		if(isMovingDistance){
+			
+			distance_error = targetDistance - getAverageDistance();
+			
+			if(Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD){
+				//Robot has reached target
+				targetThrottle = 0.0;
+				isMovingDistance = false;
+			}
+			else
+			{
+				targetTurn = -1*(gyro.getAngle()/10);
+			}
+		}
+		else{
+			targetThrottle = 0.0;
+			targetTurn = 0.0;
+		}
+		
+		setTargetSpeeds(targetThrottle, targetTurn);
+		
+		leftMasterMotor.set((Constants.LEFT_DRIVE_REVERSED ? -1:1) * leftMotorCommand);
+		rightMasterMotor.set((Constants.RIGHT_DRIVE_REVERSED ? -1:1) * rightMotorCommand);
+		
+		updateDashboard();
 	}
 	
 	public void updateDrivetrainTeleop() {
@@ -140,8 +169,6 @@ public class Drivetrain {
 		SmartDashboard.putNumber("Right Motor Command", rightMotorCommand);
 		SmartDashboard.putBoolean("Is Gyro Zeroed", isGyroZeroed);
 		SmartDashboard.putBoolean("Is Driving Straight", isDriveStraight);
-		SmartDashboard.putNumber("Go Straight Throttle", goStraightThrottle);
-		SmartDashboard.putNumber("Go Straight Turn", goStraightTurn);
 	}
 	
 	private double getThrottleInput()
@@ -228,11 +255,38 @@ public class Drivetrain {
 	}
 	
 	private void goStraight(){
-		double throttle;
-		double turn;
-		
 		targetThrottle = getThrottleInput();		
 		targetTurn = -1*(gyro.getAngle()/10);
 
+	}
+	
+	public static void setMoveDistance(double distance, double power){
+		//Positive distance and power is forward, negative is rearward
+		
+		//Reset Encoders because we want to measure distance from start
+		leftEncoder.reset();
+		rightEncoder.reset();
+		
+		targetDistance = distance;
+		
+		if(Math.abs(targetDistance) > Constants.TARGET_DISTANCE_THRESHOLD){
+			isMovingDistance = true;
+			targetThrottle = power;
+		}
+		else
+		{
+			isMovingDistance = false;
+			targetThrottle = 0.0;
+		}
+	}
+	
+	public double getAverageDistance(){
+		double ave;		
+		ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;
+		return ave;
+	}
+	
+	public static boolean isMovingDistance(){
+		return isMovingDistance;
 	}
 }

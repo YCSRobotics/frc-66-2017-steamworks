@@ -34,6 +34,11 @@ public class Drivetrain {
 	
 	private boolean isGyroZeroed = false;
 	
+	private boolean isDriveStraight = false;
+	
+	private double goStraightThrottle = 0.0;
+	private double goStraightTurn = 0.0;
+	
 	public Drivetrain() {		
 		
 		leftMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -71,11 +76,24 @@ public class Drivetrain {
 			driveGain = 1.0;
 		}
 		
-		targetThrottle = getThrottleInput();
-		
-		targetTurn = getTurnInput();
+		if((controller.getRawButton(Constants.A_BUTTON)) &&
+		   (!isGyroZeroed)){
+			//Gyro not zeroed, reset zero and wait one loop
+			zeroGyro();
+		}
+		else if(controller.getRawButton(Constants.A_BUTTON)){
+			//Drive Straight pressed and gyro zeored
+			goStraight();
+			isDriveStraight = true;
+		}
+		else{
+			//Do regular teleop control
+			targetThrottle = getThrottleInput();
+			targetTurn = getTurnInput();
+			isGyroZeroed = false;
+			isDriveStraight = false;
+		}
 
-		
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
 		//Set motor outputs
@@ -120,7 +138,10 @@ public class Drivetrain {
 		SmartDashboard.putNumber("Gyro Rate", gyro.getRate());
 		SmartDashboard.putNumber("Left Motor Command", leftMotorCommand);
 		SmartDashboard.putNumber("Right Motor Command", rightMotorCommand);
-		
+		SmartDashboard.putBoolean("Is Gyro Zeroed", isGyroZeroed);
+		SmartDashboard.putBoolean("Is Driving Straight", isDriveStraight);
+		SmartDashboard.putNumber("Go Straight Throttle", goStraightThrottle);
+		SmartDashboard.putNumber("Go Straight Turn", goStraightTurn);
 	}
 	
 	private double getThrottleInput()
@@ -204,5 +225,14 @@ public class Drivetrain {
 		else{
 			//Do nothing, button is still pressed
 		}
+	}
+	
+	private void goStraight(){
+		double throttle;
+		double turn;
+		
+		targetThrottle = getThrottleInput();		
+		targetTurn = -1*(gyro.getAngle()/10);
+
 	}
 }

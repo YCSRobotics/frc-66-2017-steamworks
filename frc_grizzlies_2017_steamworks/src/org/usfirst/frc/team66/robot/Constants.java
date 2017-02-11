@@ -20,10 +20,10 @@ public class Constants {
 	
 	public static final int LEFT_STICK_Y  = 1;
 	public static final int RIGHT_STICK_X = 4;
-	public static final int RIGHT_TRIGGER = 3;
-	public static final int LEFT_TRIGGER  = 2;
-	public static final int BACK_BUTTON   = 7;
-	public static final int A_BUTTON      = 1;
+	public static final int RIGHT_TRIGGER = 3;//Shift Button
+	public static final int LEFT_TRIGGER  = 2;//Finesse Mode
+	public static final int BACK_BUTTON   = 7;//Invert
+	public static final int A_BUTTON      = 1;//Drive Straight
 	
 	public static final double DEAD_ZONE_LIMIT = 0.3;
 	public static final double TRIGGER_ACTIVE_THRESHOLD = 0.5;

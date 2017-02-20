@@ -84,6 +84,14 @@ public class AutonSupervisor {
 		}
 	}
 	
+	private void stateActionMoveDistanceTrackCamera(){
+		//TODO
+	}
+	
+	private void stateActionTurnToTarget(){
+		//
+	}
+	
 	private void stateActionStop(){
 		Drivetrain.setMoveDistance(0.0, 0.0);
 	}

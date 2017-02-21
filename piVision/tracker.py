@@ -57,7 +57,7 @@ while (True):
         Rect2 = TopLeft2+BottomRight2
 
         Table.putString("Rect1", Rect1)
-        Table.putStringArray("Rect2", Rect2)
+        Table.putString("Rect2", Rect2)
         Table.putBoolean("NoContoursFound", False)
 
     except IndexError:

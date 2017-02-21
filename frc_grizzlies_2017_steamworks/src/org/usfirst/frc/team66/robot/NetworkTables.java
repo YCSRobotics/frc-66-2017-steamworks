@@ -16,23 +16,11 @@ public class NetworkTables {
 	
 	public static void getPiValues() {
 		
-		NetworkTable ntable = NetworkTable.getTable("table");
+		NetworkTable ntable = NetworkTable.getTable("Table");
 		
-		//set default array
-		String[] arrayDefault = {"0.0"};
-		
-		//Checks if connected, otherwise prints not connected.
-		if(ntable.isConnected() == true) {
-			
-			ntable.getStringArray("Rect1", arrayDefault); //rect 1 coords (x1,y1,x2,y2)
-			ntable.getStringArray("Rect2", arrayDefault); //rect 2 coords (x1,y1,x2,y2)
-			ntable.getBoolean("NoContoursFound", false); //Is Contours Found? Default to False
-			
-		} else {
-			
-			System.out.println("NetworkTable not Connected!");
-			
-		}
+		String Rect1 = ntable.getString("Rect1", "0"); //rect 1 coords (x1,y1,x2,y2)
+		String Rect2 = ntable.getString("Rect2", "0"); //rect 2 coords (x1,y1,x2,y2)
+		Boolean NoContoursFound = ntable.getBoolean("NoContoursFound", false); //Is Contours Found? Default to False
 		
 	}
 	

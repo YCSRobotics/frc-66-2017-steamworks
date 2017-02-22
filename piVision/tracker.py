@@ -4,7 +4,6 @@ import logging
 from networktables import NetworkTables
 
 logging.basicConfig(level=logging.DEBUG)
-#initialize the networktable and set mode
 NetworkTables.setClientMode()
 NetworkTables.initialize(server='10.4.70.78')
 Table = NetworkTables.getTable("Table")
@@ -15,7 +14,6 @@ camera = cv2.VideoCapture('http://10.4.70.87/mjpg/video.mjpg')
 count = 1
 
 while (True):
-    #create variables
     (grabbed, frame) = camera.read()
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -27,7 +25,6 @@ while (True):
 
     areaArray = []
     count = 1
-    #in case things break
     try:
         b, contours, _ = cv2.findContours(green_range, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
  
@@ -53,26 +50,33 @@ while (True):
              aspect_ratio1 = float(wg)/hg
              aspect_ratio2 = float(w)/h
              
-             ratioMax = 0.53
-             ratioMin = 0.36
+             ratioMax = 0.75
+             ratioMin = 0.20
              
-             #print(aspect_ratio1) #debug
+             #print(aspect_ratio1)
              #print(aspect_ratio2)
 
              if (aspect_ratio1 and aspect_ratio2 <= ratioMax and aspect_ratio1 and aspect_ratio2 >= ratioMin):
                  cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2)
                  cv2.rectangle(frame, (xg,yg), (xg+wg, yg+hg), (0,255,0), 2)
      
-                 TopLeft1 = (xg,yg)
-                 BottomRight1 = (xg+wg, yg-hg)
-                 TopLeft2 = (x,y)
-                 BottomRight2 = (x+w, y-h)
+                 TopLeft1 = xg,yg
+                 BottomRight1 = xg+wg, yg-hg
+                 TopLeft2 = x, y
+                 BottomRight2 = x+w, y-h
             
-                 Rect1 = TopLeft1+BottomRight1
-                 Rect2 = TopLeft2+BottomRight2
+                 Rect1 = [xg, yg, wg+wg, yg-hg]
+                 Rect2 = [x, y, x+w, y-h]
     
-                 Table.putString("Rect1", Rect1)
-                 Table.putString("Rect2", Rect2)
+                 OverallWidth = abs((x+w)-(xg+wg))
+                 CenterOfTarget = [OverallWidth/2]
+                 CenterOfTargetCoords = ((x+w)+(xg+wg)/2)
+
+                 Table.putNumber("OverallWidth", OverallWidth)
+                 Table.putNumber("CenterOfTargetCoords", CenterOfTargetCoords)
+                 Table.putNumberArray("CenterOfTarget", CenterOfTarget)
+                 Table.putNumberArray("Rect1", Rect1)
+                 Table.putNumberArray("Rect2", Rect2)
                  Table.putBoolean("NoContoursFound", False)
 
              else:
@@ -80,12 +84,12 @@ while (True):
 
     except IndexError:
         Table.putBoolean("NoContoursFound", True)
-
-    #cv2.imshow("Frame", frame) #for debug 
-    #key = cv2.waitKey(1) & 0xFF
+   
+    cv2.imshow("Frame", frame)
+    key = cv2.waitKey(1) & 0xFF
     
-    #if key ==ord("q"):
-        #break
+    if key ==ord("q"):
+        break
     
 camera.release()
 cv2.destroyAllWindows()

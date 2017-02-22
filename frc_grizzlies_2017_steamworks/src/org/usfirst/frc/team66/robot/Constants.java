@@ -78,4 +78,9 @@ public class Constants {
 	
 	//Gyro
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();
+	
+	//Math Constants
+	public static final double CAMERA_WIDTH = 640;
+	public static final double FIELD_OF_VIEW = 54;
+	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

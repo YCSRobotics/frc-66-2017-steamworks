@@ -20,6 +20,8 @@ public class PiMath {
 		double degAngle = ((NetworkTables.CenterOfTargetCoords() - 
 				(Constants.CAMERA_WIDTH/2)) * Constants.DEG_PER_PIXEL);
 		
-		return degAngle;
+		return degAngle; //returns the angle to target
 	}
 }
+
+//how to use, simply call the method and you'll have your value

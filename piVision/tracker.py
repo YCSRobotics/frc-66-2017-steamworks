@@ -47,31 +47,32 @@ while (True):
              green=max(contours, key=cv2.contourArea)
              (xg,yg,wg,hg) = cv2.boundingRect(green)
              
+             #find aspect ratio of contour
              aspect_ratio1 = float(wg)/hg
              aspect_ratio2 = float(w)/h
              
+             #set min and max ratios
              ratioMax = 0.75
              ratioMin = 0.20
              
-             #print(aspect_ratio1)
+             #print(aspect_ratio1) #for debug
              #print(aspect_ratio2)
-
+             
+             #only run if contour is within ratioValues
              if (aspect_ratio1 and aspect_ratio2 <= ratioMax and aspect_ratio1 and aspect_ratio2 >= ratioMin):
                  cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2)
                  cv2.rectangle(frame, (xg,yg), (xg+wg, yg+hg), (0,255,0), 2)
-     
-                 TopLeft1 = xg,yg
-                 BottomRight1 = xg+wg, yg-hg
-                 TopLeft2 = x, y
-                 BottomRight2 = x+w, y-h
-            
+                 
+                 #create arrays
                  Rect1 = [xg, yg, wg+wg, yg-hg]
                  Rect2 = [x, y, x+w, y-h]
-    
+                 
+                 #calculate information
                  OverallWidth = abs((x+w)-(xg+wg))
                  CenterOfTarget = [OverallWidth/2]
                  CenterOfTargetCoords = ((x+w)+(xg+wg)/2)
 
+                 #put values to networktable
                  Table.putNumber("OverallWidth", OverallWidth)
                  Table.putNumber("CenterOfTargetCoords", CenterOfTargetCoords)
                  Table.putNumberArray("CenterOfTarget", CenterOfTarget)
@@ -84,12 +85,12 @@ while (True):
 
     except IndexError:
         Table.putBoolean("NoContoursFound", True)
-   
-    cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
     
-    if key ==ord("q"):
-        break
+    #cv2.imshow("Frame", frame) #enable for debug
+    #key = cv2.waitKey(1) & 0xFF
+    
+    #if key ==ord("q"):
+        #break
     
 camera.release()
 cv2.destroyAllWindows()

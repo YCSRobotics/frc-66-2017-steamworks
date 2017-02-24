@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class NetworkTables {
 	
-	static double[] defaultArray = {0.0};
+	static double[] defaultArray = {0.0}; //double array will default this value
 	
 	public NetworkTables() {
 		
@@ -16,13 +16,8 @@ public class NetworkTables {
 			
 	}
 	
-	static NetworkTable ntable = NetworkTable.getTable("Table");
-	
-	static double[] Rect2 = ntable.getNumberArray("Rect2", defaultArray); //rect 2 coords {x1,y1,x2,y2}
-	static boolean NoContoursFound = ntable.getBoolean("NoContoursFound", false); //check if No Contours are found, defaults to true
-	
 	public static double[] Rect1(){
-		while(true){
+		while(true){ //for some reason, code won't loop when called without while loop
 			
 			NetworkTable ntable = NetworkTable.getTable("Table");
 			double[] Rect1 = ntable.getNumberArray("Rect1", defaultArray); //rect 1 coords {x1,y1,x2,y2}
@@ -65,7 +60,7 @@ public class NetworkTables {
 		while(true){
 			
 			NetworkTable ntable = NetworkTable.getTable("Table");
-			double[] OverallWidth = ntable.getNumberArray("OverallWidth", defaultArray); //center of target x,y
+			double[] OverallWidth = ntable.getNumberArray("OverallWidth", defaultArray); //center of target absolute x,y
 			return OverallWidth;
 			
 		}

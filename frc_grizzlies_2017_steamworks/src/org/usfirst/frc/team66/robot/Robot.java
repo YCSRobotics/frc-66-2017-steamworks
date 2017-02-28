@@ -23,6 +23,7 @@ public class Robot extends IterativeRobot {
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
 	public static Drivetrain DRIVETRAIN;
+	public static GearIntake GEAR_INTAKE;
 	public static AutonSupervisor AUTON_SUPERVISOR;
 
 	/**
@@ -41,6 +42,7 @@ public class Robot extends IterativeRobot {
 		
 		AUTON_SUPERVISOR = new AutonSupervisor();
 		DRIVETRAIN = new Drivetrain();
+		GEAR_INTAKE = new GearIntake();
 	}
 
 	/**
@@ -101,6 +103,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		DRIVETRAIN.updateDrivetrainTeleop();
+		GEAR_INTAKE.updateGearIntakeTelopPeriodic();
 		NetworkTables.getPiValues();
 		
 	}

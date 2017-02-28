@@ -60,32 +60,71 @@ public class AutonSupervisor {
 				Drivetrain.setMoveDistance(96.0, 0.15);
 				currentAutonState = MOVE_DISTANCE;
 			}
+			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
+					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
+				Drivetrain.setMoveDistance(60.0, 0.15);
+				currentAutonState = MOVE_DISTANCE;
+			}
+			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
+				Drivetrain.setMoveToVisionTarget(Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			}
 			else{
 				currentAutonState = STOP;
 			}
-		}else{
+		}
+		else{
 			//Selected Routine is DO_NOTHING
 			currentAutonState = STOP;
 		}
 	}
 	
 	private void stateActionMoveDistance(){
-		if(selectedAutonRoutine == CROSS_BASELINE){
+		if((selectedAutonRoutine == CROSS_BASELINE)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)||
+		   (selectedAutonRoutine == PLACE_LEFT_GEAR)){
 			if(!Drivetrain.isMovingDistance()){
-				//Move is complete, go to STOP state
-				currentAutonState = STOP;
+				//Move is complete, go to next state
+				if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
+					Drivetrain.setTurnToTarget(-0.2);
+					currentAutonState = TURN_TO_TARGET;
+				}
+				else if(selectedAutonRoutine == PLACE_LEFT_GEAR){
+					Drivetrain.setTurnToTarget(0.2);
+					currentAutonState = TURN_TO_TARGET;
+				}
+				else
+				{
+					//CROSS BASELINE
+					currentAutonState = STOP;
+				}
 			}
 			else{
 				//Do nothing and wait for move to complete
 			}
-		}else
-		{
+		}
+		else{
+			//Should never get here
 			currentAutonState = STOP;
 		}
 	}
 	
-	private void stateActionMoveDistanceTrackCamera(){
-		//TODO
+	private void stateActionMoveDistanceTrackTarget(){
+		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
+		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
+			
+			if(!Drivetrain.isMovingToVisionTarget()){
+				if(Drivetrain.isVisionTargetReached()){
+					currentAutonState = STOP;//TODO - Will need to place gear, etc
+				}
+				else{
+					//Lost target, abort Auton
+					currentAutonState = STOP;
+				}
+			}
+				
+		}
 	}
 	
 	private void stateActionTurnToTarget(){

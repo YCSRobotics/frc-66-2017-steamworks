@@ -24,7 +24,7 @@ public class Drivetrain {
 	private static ADXRS450_Gyro gyro = Constants.GYRO;
 	
 	private static double targetThrottle = 0.0;
-	private double targetTurn = 0.0;
+	private static double targetTurn = 0.0;
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
 	
@@ -37,6 +37,15 @@ public class Drivetrain {
 	
 	private static double targetDistance = 0.0;
 	private static boolean isMovingDistance = false;
+	
+	private static boolean isMovingToVisionTarget = false;
+	private static boolean isVisionTargetReached = false;
+	
+	private static boolean isTurningToVisionTarget	= false;
+	private static boolean isTargetFound = false;
+	private static boolean isTargetCentered = true;
+	
+	private static int invalidTargetCount = 0;
 	
 	public Drivetrain() {		
 		
@@ -61,17 +70,92 @@ public class Drivetrain {
 		double distance_error;
 		
 		if(isMovingDistance){
-			
+			//Move distance without tracking vision target
 			distance_error = targetDistance - getAverageDistance();
 			
 			if(Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD){
 				//Robot has reached target
 				targetThrottle = 0.0;
+				targetTurn     = 0.0;
 				isMovingDistance = false;
 			}
 			else
 			{
-				targetTurn = -1*(gyro.getAngle()/10);
+				targetTurn = -1*(gyro.getAngle()*Constants.GYRO_GAIN);
+			}
+		}
+		else if(isMovingToVisionTarget){
+			//Move forward while tracking vision target
+			updateTargetValidity();
+			
+			if((invalidTargetCount <= Constants.TARGET_INVALID_THRESHOLD)){	
+				if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
+					//Reached minimum target distance so stop
+					targetThrottle = 0.0;
+					targetTurn     = 0.0;
+					isVisionTargetReached = true;
+					isMovingToVisionTarget = false;
+				}
+				else
+				{
+					targetTurn = -1*(PiMath.angleToTarget()*Constants.GYRO_GAIN);
+				}
+			}
+			else{
+				//Consider target invalid, stop moving
+				targetThrottle = 0.0;
+				targetTurn = 0.0;
+				isMovingToVisionTarget = false;
+			}	
+		}
+		else if(isTurningToVisionTarget)
+		{
+			//Turn until vision target centered
+			if(Math.abs(gyro.getAngle()) <= Constants.MAX_TURN_TO_TARGET_ANGLE){
+				if((PiMath.isValidTargetPresent() &&
+				   (!isTargetFound))){
+					//Set a flag the first time we see the target
+					isTargetFound = true;
+				}
+				else{
+					//Do nothing if we never see target
+				}
+				
+				if(isTargetFound){
+					//Can check for lost target now
+					updateTargetValidity();
+				}
+				else{
+					//Target not yet found, so don't look for lost target
+				}
+				
+				if((isTargetFound) &&
+				   (invalidTargetCount <= Constants.TARGET_INVALID_THRESHOLD)){		   
+					
+					if(PiMath.angleToTarget() <= Constants.TARGET_ANGLE_THRESHOLD){
+						//Target is centered so stop turning
+						targetThrottle = 0.0;
+						targetTurn = 0.0;
+						isTargetCentered = true;
+						isTurningToVisionTarget = false;
+					}
+					else
+					{
+						//Target not centered
+					}
+				}
+				else{
+					targetThrottle = 0.0;
+					targetTurn = 0.0;
+					isTurningToVisionTarget = false;
+				}
+					
+			}
+			else{
+				//Never found target
+				targetThrottle = 0.0;
+				targetTurn = 0.0;
+				isTurningToVisionTarget = false;
 			}
 		}
 		else{
@@ -257,7 +341,6 @@ public class Drivetrain {
 	private void goStraight(){
 		targetThrottle = getThrottleInput();		
 		targetTurn = -1*(gyro.getAngle()/10);
-
 	}
 	
 	public static void setMoveDistance(double distance, double power){
@@ -280,13 +363,72 @@ public class Drivetrain {
 		}
 	}
 	
-	public double getAverageDistance(){
-		double ave;		
-		ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;
-		return ave;
+	public static void setMoveToVisionTarget(double power){	
+		if(PiMath.isValidTargetPresent()){
+			if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
+				isMovingToVisionTarget = true;
+				invalidTargetCount = 0;
+				targetThrottle = power;
+			}
+			else{
+				isMovingToVisionTarget = false;
+				targetThrottle = 0.0;
+			}
+		}
+	}
+	
+	public static void setTurnToTarget(double turn){
+		isTurningToVisionTarget	= false;
+		isTargetFound = false;
+		isTargetCentered = false;
+		targetTurn = turn;
 	}
 	
 	public static boolean isMovingDistance(){
 		return isMovingDistance;
 	}
+	
+	public static boolean isMovingToVisionTarget(){
+		return isMovingToVisionTarget;
+	}
+	
+	public static boolean isVisionTargetReached(){
+		return isVisionTargetReached;
+	}
+	
+	public static boolean isTurningToVisionTarget(){
+		return isTurningToVisionTarget;
+	}
+	
+	public static boolean isVisionTargetCentered(){
+		return isTargetCentered;
+	}
+	
+	private double getAverageDistance(){
+		double ave;		
+		ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;
+		return ave;
+	}
+	
+	private void updateTargetValidity(){
+		if(PiMath.isValidTargetPresent()){
+			//Target is valid, decrement Invalid Count
+			if(invalidTargetCount > 0){
+				invalidTargetCount--;
+			}
+			else{
+				//Don't decrement below 0
+			}
+		}
+		else{
+			//Invalid target, increment counter
+			if(invalidTargetCount < Constants.TARGET_INVALID_THRESHOLD){
+				invalidTargetCount++;
+			}
+			else{
+				//Don't increment above threshold
+			}
+		}
+	}
+	
 }

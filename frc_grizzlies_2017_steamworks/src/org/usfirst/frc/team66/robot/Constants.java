@@ -47,10 +47,20 @@ public class Constants {
 	public static final double DRIVE_RAMP_RATE     = (RAMP_ENABLED ? (Math.max(MIN_TALON_RAMP_RATE, 
 													 	(12/DRIVE_RAMP_TIME))) : 0.0);
 	
-	public static final double TARGET_DISTANCE_THRESHOLD = 6.0; 
+	public static final double TARGET_DISTANCE_THRESHOLD  = 6.0;
+	
+	public static final double AUTON_THROTTLE_VALUE       = 0.25;
+	
+	public static final double VISION_TARGET_THRESHOLD    = 48.0;
+	public static final double IR_SENSOR_THRESHOLD        = 12.0;
+	public static final int TARGET_INVALID_THRESHOLD      = 5;
+	
+	public static final double MAX_TURN_TO_TARGET_ANGLE   = 90.0;
+	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
+	public static final double GYRO_GAIN    = 0.02;
 	
 	//Drive Encoder Config
 	public static final int LEFT_ENCODER_CHANNEL_A  = 0;
@@ -102,4 +112,9 @@ public class Constants {
 	
 	//Gyro
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();
+	
+	//Math Constants
+	public static final double CAMERA_WIDTH = 640;
+	public static final double FIELD_OF_VIEW = 54;
+	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

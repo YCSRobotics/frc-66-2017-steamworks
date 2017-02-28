@@ -63,9 +63,10 @@ public class GearIntake {
 			isRaiseIntakePressed = true;
 					
 		    if(isIntakeLowered){
-		    	//Intake is lowered, so raise intake (solenoid off)
+		    	//Intake is lowered, so close and raise intake (solenoid off)
 		    	isIntakeLowered = false;
 		    	lowerIntakeSolenoid.set(false);
+		    	openIntakeSolenoid.set(false);
 			} 
 			else {
 				//Intake is raised, so lower intake (solenoid on)
@@ -89,7 +90,7 @@ public class GearIntake {
 			isOpenIntakePressed = true;
 					
 		    if(isIntakeOpen){
-		    	//Intake is lowered, so raise intake (solenoid off)
+		    	//Intake is open, so close intake (solenoid off)
 		    	isIntakeOpen = false;
 		    	openIntakeSolenoid.set(false);
 			} 

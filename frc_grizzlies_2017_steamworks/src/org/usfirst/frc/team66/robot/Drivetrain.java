@@ -89,7 +89,7 @@ public class Drivetrain {
 			updateTargetValidity();
 			
 			if((invalidTargetCount <= Constants.TARGET_INVALID_THRESHOLD)){	
-				if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
+				if(PiMath.getTargetDistance() < Constants.VISION_TARGET_THRESHOLD){
 					//Reached minimum target distance so stop
 					targetThrottle = 0.0;
 					targetTurn     = 0.0;
@@ -253,6 +253,9 @@ public class Drivetrain {
 		SmartDashboard.putNumber("Right Motor Command", rightMotorCommand);
 		SmartDashboard.putBoolean("Is Gyro Zeroed", isGyroZeroed);
 		SmartDashboard.putBoolean("Is Driving Straight", isDriveStraight);
+		SmartDashboard.putBoolean("Is Moving To Vision Target", isMovingToVisionTarget);
+		SmartDashboard.putBoolean("Is Target Reached", isVisionTargetReached);
+		SmartDashboard.putNumber("Distance to Vision Target", PiMath.getTargetDistance());
 	}
 	
 	private double getThrottleInput()
@@ -364,7 +367,7 @@ public class Drivetrain {
 	}
 	
 	public static void setMoveToVisionTarget(double power){	
-		if(PiMath.isValidTargetPresent()){
+		//if(PiMath.isValidTargetPresent()){
 			if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
 				isMovingToVisionTarget = true;
 				invalidTargetCount = 0;
@@ -374,7 +377,7 @@ public class Drivetrain {
 				isMovingToVisionTarget = false;
 				targetThrottle = 0.0;
 			}
-		}
+		//}
 	}
 	
 	public static void setTurnToTarget(double turn){

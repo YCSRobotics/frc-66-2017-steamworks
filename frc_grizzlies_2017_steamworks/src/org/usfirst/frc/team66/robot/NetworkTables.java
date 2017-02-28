@@ -10,7 +10,7 @@ public class NetworkTables {
 		
 		//set table as client and connect to server
 		NetworkTable.setClientMode();
-		NetworkTable.setIPAddress("10.4.70.24");
+		NetworkTable.setIPAddress("10.4.70.12");
 		NetworkTable.setTeam(470);
 		NetworkTable.initialize();
 			

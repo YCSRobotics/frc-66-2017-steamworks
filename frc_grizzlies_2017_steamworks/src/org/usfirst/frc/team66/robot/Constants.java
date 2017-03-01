@@ -60,6 +60,7 @@ public class Constants {
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
+	public static final double SKIM_GAIN	= 0.3;
 	public static final double GYRO_GAIN    = 0.02;
 	
 	//Drive Encoder Config

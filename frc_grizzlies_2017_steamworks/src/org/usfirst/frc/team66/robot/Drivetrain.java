@@ -47,6 +47,8 @@ public class Drivetrain {
 	
 	private static int invalidTargetCount = 0;
 	
+	private static double visionTargetDistance[] = {72,72,72,72,72};
+	private static int distanceFilterIndex = 0;
 	public Drivetrain() {		
 		
 		leftMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -282,11 +284,11 @@ public class Drivetrain {
 	private double skim(double v) {
 		if (v > 1.0)
 		{
-			return -((v-1.0));
+			return -((v-1.0)*Constants.SKIM_GAIN);
 		}
 		else if (v < -1.0)
 		{
-			return -((v+1.0)); 
+			return -((v+1.0)*Constants.SKIM_GAIN); 
 		}
 		else
 		{
@@ -412,6 +414,10 @@ public class Drivetrain {
 		ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;
 		return ave;
 	}
+	
+	/*private double updateTargetDistanceFilter(){
+		
+	}*/
 	
 	private void updateTargetValidity(){
 		if(PiMath.isValidTargetPresent()){

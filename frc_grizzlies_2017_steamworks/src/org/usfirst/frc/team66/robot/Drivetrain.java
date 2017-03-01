@@ -47,8 +47,15 @@ public class Drivetrain {
 	
 	private static int invalidTargetCount = 0;
 	
-	private static double visionTargetDistance[] = {72,72,72,72,72};
-	private static int distanceFilterIndex = 0;
+	private static double distMovAveTable[] = {60,60,60,60,60};
+	private static double distMovAverage = 0;
+	private static int distMovAveIndx = 0;
+	
+	private static double angleMovAveTable[] = {0,0,0,0,0};
+	private static double angleMovAverage = 0;
+	private static int angleMovAveIndx = 0;
+	
+	
 	public Drivetrain() {		
 		
 		leftMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -415,10 +422,51 @@ public class Drivetrain {
 		return ave;
 	}
 	
-	/*private double updateTargetDistanceFilter(){
+	private void updateDistanceMovingAverage(){
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
+		double sum = 0;
 		
-	}*/
+		distMovAveTable[distMovAveIndx] = PiMath.getTargetDistance();
+		
+		for(int i=0; i > 5; i++){
+			maxValue = Math.max(minValue, distMovAveTable[i]);
+			minValue = Math.min(maxValue, distMovAveTable[i]);
+			sum = sum + distMovAveTable[i];
+		}
+		
+		distMovAverage = (sum - maxValue - minValue)/3;
+		
+		if(distMovAveIndx == 4){
+			distMovAveIndx = 0;
+		}
+		else{
+			distMovAveIndx++;
+		}
+	}
 	
+	private void updateAngleMovingAverage(){
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
+		double sum = 0;
+		
+		angleMovAveTable[angleMovAveIndx] = PiMath.angleToTarget();
+		
+		for(int i=0; i > 5; i++){
+			maxValue = Math.max(minValue, angleMovAveTable[i]);
+			minValue = Math.min(maxValue, angleMovAveTable[i]);
+			sum = sum + angleMovAveTable[i];
+		}
+		
+		angleMovAverage = (sum - maxValue - minValue)/3;
+		
+		if(angleMovAveIndx == 4){
+			angleMovAveIndx = 0;
+		}
+		else{
+			angleMovAveIndx++;
+		}
+	}
 	private void updateTargetValidity(){
 		if(PiMath.isValidTargetPresent()){
 			//Target is valid, decrement Invalid Count

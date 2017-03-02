@@ -17,7 +17,7 @@ public class GearIntake {
 	private boolean isIntakeLowered;
 	private boolean isRaiseIntakePressed;
 	
-	private boolean isIntakeOpen;
+	private static boolean isIntakeOpen;
 	private boolean isOpenIntakePressed;
 	
 	public GearIntake(){
@@ -106,6 +106,11 @@ public class GearIntake {
 		else{
 			//Do nothing, button is still pressed
 		}
+	}
+	
+	public static void openIntake(){
+		isIntakeOpen = true;
+		openIntakeSolenoid.set(true);
 	}
 
 }

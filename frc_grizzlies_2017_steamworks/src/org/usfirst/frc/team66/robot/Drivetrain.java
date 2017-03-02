@@ -47,7 +47,7 @@ public class Drivetrain {
 	
 	private static int invalidTargetCount = 0;
 	
-	private static double distMovAveTable[] = {60,60,60,60,60};
+	private static double distMovAveTable[] = {0,0,0,0,0};
 	private static double distMovAverage = 0;
 	private static int distMovAveIndx = 0;
 	
@@ -95,27 +95,18 @@ public class Drivetrain {
 		}
 		else if(isMovingToVisionTarget){
 			//Move forward while tracking vision target
-			updateTargetValidity();
 			
-			if((invalidTargetCount <= Constants.TARGET_INVALID_THRESHOLD)){	
-				if(PiMath.getTargetDistance() < Constants.VISION_TARGET_THRESHOLD){
-					//Reached minimum target distance so stop
-					targetThrottle = 0.0;
-					targetTurn     = 0.0;
-					isVisionTargetReached = true;
-					isMovingToVisionTarget = false;
-				}
-				else
-				{
-					targetTurn = -1*(PiMath.angleToTarget()*Constants.GYRO_GAIN);
-				}
-			}
-			else{
-				//Consider target invalid, stop moving
+			if(PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD){
+			//Reached minimum target distance so stop
 				targetThrottle = 0.0;
-				targetTurn = 0.0;
+				targetTurn     = 0.0;
+				isVisionTargetReached = true;
 				isMovingToVisionTarget = false;
-			}	
+			}
+			else
+			{
+				targetTurn = -1*(-PiMath.angleToTarget()*Constants.GYRO_GAIN);
+			}
 		}
 		else if(isTurningToVisionTarget)
 		{
@@ -130,18 +121,10 @@ public class Drivetrain {
 					//Do nothing if we never see target
 				}
 				
-				if(isTargetFound){
-					//Can check for lost target now
-					updateTargetValidity();
-				}
-				else{
-					//Target not yet found, so don't look for lost target
-				}
-				
 				if((isTargetFound) &&
-				   (invalidTargetCount <= Constants.TARGET_INVALID_THRESHOLD)){		   
+				   (Math.abs(gyro.getAngle()) >= Constants.MIN_TURN_TO_TARGET_ANGLE)){		   	
 					
-					if(PiMath.angleToTarget() <= Constants.TARGET_ANGLE_THRESHOLD){
+					if(Math.abs(PiMath.angleToTarget()) <= Constants.TARGET_ANGLE_THRESHOLD){
 						//Target is centered so stop turning
 						targetThrottle = 0.0;
 						targetTurn = 0.0;
@@ -150,18 +133,16 @@ public class Drivetrain {
 					}
 					else
 					{
-						//Target not centered
+						//Target not centered, so keep turning
 					}
 				}
 				else{
-					targetThrottle = 0.0;
-					targetTurn = 0.0;
-					isTurningToVisionTarget = false;
+					//Keep turning until max turn reached or target found
 				}
 					
 			}
 			else{
-				//Never found target
+				//Never saw target
 				targetThrottle = 0.0;
 				targetTurn = 0.0;
 				isTurningToVisionTarget = false;
@@ -186,6 +167,11 @@ public class Drivetrain {
 		double driveGain;
 		double throttle;
 		double turn;
+		
+		//Update vision target averages
+		
+		updateDistance3of5Average();
+		updateAngle3of5Average();
 		
 		//Handle invert toggle
 		setInvert();
@@ -250,8 +236,6 @@ public class Drivetrain {
 	}
 	
 	private void updateDashboard(){
-		SmartDashboard.putNumber("Left Encoder Counts", leftEncoder.get());
-		SmartDashboard.putNumber("Right Encoder Counts", rightEncoder.get());
 		SmartDashboard.putNumber("Left Wheel Distance", leftEncoder.getDistance());
 		SmartDashboard.putNumber("Right Wheel Distance", rightEncoder.getDistance());
 		SmartDashboard.putBoolean("Inverted", isInverted);
@@ -264,7 +248,14 @@ public class Drivetrain {
 		SmartDashboard.putBoolean("Is Driving Straight", isDriveStraight);
 		SmartDashboard.putBoolean("Is Moving To Vision Target", isMovingToVisionTarget);
 		SmartDashboard.putBoolean("Is Target Reached", isVisionTargetReached);
-		SmartDashboard.putNumber("Distance to Vision Target", PiMath.getTargetDistance());
+		SmartDashboard.putBoolean("Is Turning To Target", isTurningToVisionTarget);
+		SmartDashboard.putBoolean("Is Target Found", isTargetFound);
+		SmartDashboard.putBoolean("Is Target Centered", isTargetCentered);
+		SmartDashboard.putNumber("Raw Distance to Vision Target", PiMath.getTargetDistance());
+		SmartDashboard.putNumber("Raw Angle to Vision Target", PiMath.angleToTarget());
+		SmartDashboard.putBoolean("Is Target Valid", PiMath.isValidTargetPresent());
+		SmartDashboard.putNumber("Target Throttle", targetThrottle);
+		SmartDashboard.putNumber("Target Turn", targetTurn);
 	}
 	
 	private double getThrottleInput()
@@ -376,21 +367,19 @@ public class Drivetrain {
 	}
 	
 	public static void setMoveToVisionTarget(double power){	
-		//if(PiMath.isValidTargetPresent()){
+			
 			if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
 				isMovingToVisionTarget = true;
-				invalidTargetCount = 0;
 				targetThrottle = power;
 			}
 			else{
 				isMovingToVisionTarget = false;
 				targetThrottle = 0.0;
 			}
-		//}
 	}
 	
 	public static void setTurnToTarget(double turn){
-		isTurningToVisionTarget	= false;
+		isTurningToVisionTarget	= true;
 		isTargetFound = false;
 		isTargetCentered = false;
 		targetTurn = turn;
@@ -422,9 +411,9 @@ public class Drivetrain {
 		return ave;
 	}
 	
-	private void updateDistanceMovingAverage(){
-		double maxValue = Double.MIN_VALUE;
-		double minValue = Double.MAX_VALUE;
+	private void updateDistance3of5Average(){
+		double maxValue = 1000;
+		double minValue = 0;
 		double sum = 0;
 		
 		distMovAveTable[distMovAveIndx] = PiMath.getTargetDistance();
@@ -445,9 +434,9 @@ public class Drivetrain {
 		}
 	}
 	
-	private void updateAngleMovingAverage(){
-		double maxValue = Double.MIN_VALUE;
-		double minValue = Double.MAX_VALUE;
+	private void updateAngle3of5Average(){
+		double maxValue = 180;
+		double minValue = 0;
 		double sum = 0;
 		
 		angleMovAveTable[angleMovAveIndx] = PiMath.angleToTarget();

@@ -51,11 +51,12 @@ public class Constants {
 	
 	public static final double AUTON_THROTTLE_VALUE       = 0.25;
 	
-	public static final double VISION_TARGET_THRESHOLD    = 12.0;
+	public static final double VISION_TARGET_THRESHOLD    = 30.0;
 	public static final double IR_SENSOR_THRESHOLD        = 12.0;
 	public static final int TARGET_INVALID_THRESHOLD      = 5;
 	
 	public static final double MAX_TURN_TO_TARGET_ANGLE   = 90.0;
+	public static final double MIN_TURN_TO_TARGET_ANGLE	  = 30.0;
 	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
 	
 	public static final double FINESSE_GAIN = 0.6;

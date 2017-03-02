@@ -16,7 +16,8 @@ public class AutonSupervisor {
 	final static int MOVE_DISTANCE 			    = 1;
 	final static int MOVE_DISTANCE_TRACK_TARGET = 2;
 	final static int TURN_TO_TARGET 		    = 3;
-	final static int STOP					    = 4;
+	final static int BACK_UP					= 4;
+	final static int STOP					    = 5;
 	
 	public static int selectedAutonRoutine;
 	public static int currentAutonState = 0;
@@ -40,7 +41,14 @@ public class AutonSupervisor {
 			stateActionMoveDistance();
 			break;
 		case MOVE_DISTANCE_TRACK_TARGET:
+			stateActionMoveDistanceTrackTarget();
+			break;
 		case TURN_TO_TARGET:
+			stateActionTurnToTarget();
+			break;
+		case BACK_UP:
+			stateActionBackUp();
+			break;
 		case STOP:
 		default:
 			stateActionStop();	
@@ -51,18 +59,19 @@ public class AutonSupervisor {
 	
 	private void updateAutonDashboard(){
 		SmartDashboard.putNumber("Selected Routine", selectedAutonRoutine);
+		SmartDashboard.putNumber("Current Auton State", currentAutonState);
 	}
 	
 	//State Action Methods
 	private void stateActionStart(){
 		if(selectedAutonRoutine != DO_NOTHING){
 			if(selectedAutonRoutine == CROSS_BASELINE){
-				Drivetrain.setMoveDistance(96.0, 0.15);
+				Drivetrain.setMoveDistance(96.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
-				Drivetrain.setMoveDistance(60.0, 0.15);
+				Drivetrain.setMoveDistance(72.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
@@ -80,17 +89,17 @@ public class AutonSupervisor {
 	}
 	
 	private void stateActionMoveDistance(){
-		if((selectedAutonRoutine == CROSS_BASELINE)   ||
+		if((selectedAutonRoutine == CROSS_BASELINE)  ||
 		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)||
 		   (selectedAutonRoutine == PLACE_LEFT_GEAR)){
 			if(!Drivetrain.isMovingDistance()){
 				//Move is complete, go to next state
 				if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
-					Drivetrain.setTurnToTarget(-0.2);
+					Drivetrain.setTurnToTarget(-0.4);
 					currentAutonState = TURN_TO_TARGET;
 				}
 				else if(selectedAutonRoutine == PLACE_LEFT_GEAR){
-					Drivetrain.setTurnToTarget(0.2);
+					Drivetrain.setTurnToTarget(0.4);
 					currentAutonState = TURN_TO_TARGET;
 				}
 				else
@@ -115,20 +124,36 @@ public class AutonSupervisor {
 		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
 			
 			if(!Drivetrain.isMovingToVisionTarget()){
-				if(Drivetrain.isVisionTargetReached()){
-					currentAutonState = STOP;//TODO - Will need to place gear, etc
-				}
-				else{
-					//Lost target, abort Auton
-					currentAutonState = STOP;
-				}
+				GearIntake.openIntake();
+				Drivetrain.setMoveDistance(-12, -0.25);
+				currentAutonState = BACK_UP;
+			}
+			else{
+				//Do nothing and wait
 			}
 				
 		}
 	}
 	
 	private void stateActionTurnToTarget(){
-		//
+		if((selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
+			
+			if(!Drivetrain.isTurningToVisionTarget()){
+				Drivetrain.setMoveToVisionTarget(Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			  }
+			else{
+				//Do nothing and wait
+			}
+						
+		}
+	}
+	
+	private void stateActionBackUp(){
+		if(!Drivetrain.isMovingDistance()){
+			currentAutonState = STOP;
+		}
 	}
 	
 	private void stateActionStop(){

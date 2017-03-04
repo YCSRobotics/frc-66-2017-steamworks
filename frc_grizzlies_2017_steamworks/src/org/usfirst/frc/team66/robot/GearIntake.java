@@ -27,14 +27,21 @@ public class GearIntake {
 	public void updateGearIntakeTelopPeriodic(){
 		
 		double intakeSpeed;
+		double rotateSpeed;
 		
 		toggleRaiseIntake();
 		toggleOpenIntake();
 		
-		intakeSpeed = controller.getRawAxis(Constants.LEFT_STICK_Y);
+		intakeSpeed = getGearInOutSpeed();
 		
-		leftGearMotor.set(intakeSpeed);
-		rightGearMotor.set(-1.0*intakeSpeed);
+		if(Math.abs(intakeSpeed) > 0){
+			leftGearMotor.set(intakeSpeed);
+			rightGearMotor.set(-1.0*intakeSpeed);
+		}
+		else{
+			leftGearMotor.set(0.0);
+			rightGearMotor.set(0.0);
+		}
 	}
 	
 	private boolean isRaiseIntakeButtonPressed(){
@@ -66,7 +73,7 @@ public class GearIntake {
 		    	//Intake is lowered, so close and raise intake (solenoid off)
 		    	isIntakeLowered = false;
 		    	lowerIntakeSolenoid.set(false);
-		    	openIntakeSolenoid.set(false);
+		    	//openIntakeSolenoid.set(false);
 			} 
 			else {
 				//Intake is raised, so lower intake (solenoid on)
@@ -111,6 +118,17 @@ public class GearIntake {
 	public static void openIntake(){
 		isIntakeOpen = true;
 		openIntakeSolenoid.set(true);
+	}
+	
+	public static void closeIntake(){
+		isIntakeOpen = false;
+		openIntakeSolenoid.set(false);
+	}
+	
+	private static double getGearInOutSpeed(){
+		double v;
+		v = controller.getRawAxis(Constants.LEFT_STICK_Y);
+		return (Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? v : 0.0);
 	}
 
 }

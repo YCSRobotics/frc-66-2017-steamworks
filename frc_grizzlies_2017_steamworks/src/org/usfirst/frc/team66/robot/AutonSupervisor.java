@@ -16,11 +16,15 @@ public class AutonSupervisor {
 	final static int MOVE_DISTANCE 			    = 1;
 	final static int MOVE_DISTANCE_TRACK_TARGET = 2;
 	final static int TURN_TO_TARGET 		    = 3;
-	final static int BACK_UP					= 4;
-	final static int STOP					    = 5;
+	final static int DELAY_AFTER_TURN			= 4;
+	final static int DELAY_AFTER_GEAR			= 5;
+	final static int BACK_UP					= 6;
+	final static int STOP					    = 7;
 	
 	public static int selectedAutonRoutine;
 	public static int currentAutonState = 0;
+	
+	public static int autonDelayCount = 0;
 	
 	public AutonSupervisor(){		
 									
@@ -45,6 +49,12 @@ public class AutonSupervisor {
 			break;
 		case TURN_TO_TARGET:
 			stateActionTurnToTarget();
+			break;
+		case DELAY_AFTER_TURN:
+			stateActionDelayAfterTurn();
+			break;
+		case DELAY_AFTER_GEAR:
+			stateActionDelayAfterGear();
 			break;
 		case BACK_UP:
 			stateActionBackUp();
@@ -71,7 +81,7 @@ public class AutonSupervisor {
 			}
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
-				Drivetrain.setMoveDistance(72.0, 0.25);
+				Drivetrain.setMoveDistance(60.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
@@ -125,8 +135,8 @@ public class AutonSupervisor {
 			
 			if(!Drivetrain.isMovingToVisionTarget()){
 				GearIntake.openIntake();
-				Drivetrain.setMoveDistance(-12, -0.25);
-				currentAutonState = BACK_UP;
+				setAutonDelay(500);
+				currentAutonState = DELAY_AFTER_GEAR;
 			}
 			else{
 				//Do nothing and wait
@@ -140,8 +150,10 @@ public class AutonSupervisor {
 		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
 			
 			if(!Drivetrain.isTurningToVisionTarget()){
-				Drivetrain.setMoveToVisionTarget(Constants.AUTON_THROTTLE_VALUE);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				//Drivetrain.setMoveToVisionTarget(0.20);
+				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				setAutonDelay(500);
+				currentAutonState = DELAY_AFTER_TURN;
 			  }
 			else{
 				//Do nothing and wait
@@ -150,14 +162,65 @@ public class AutonSupervisor {
 		}
 	}
 	
+	private void stateActionDelayAfterGear()
+	{
+		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
+		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
+		{
+			
+			if(autonDelayCount <= 20){
+				autonDelayCount = 0;
+				Drivetrain.setMoveDistance(-18, -0.15);
+				Drivetrain.zeroGyro();
+				currentAutonState = BACK_UP;
+			}
+			else
+			{
+				autonDelayCount = autonDelayCount-20; 
+			}
+		}
+		else
+		{
+			currentAutonState = STOP;
+		}
+	}
+	
+	private void stateActionDelayAfterTurn()
+	{
+		if((selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
+		{
+			
+			if(autonDelayCount <= 20){
+				autonDelayCount = 0;
+				Drivetrain.setMoveToVisionTarget(0.20);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			}
+			else
+			{
+				autonDelayCount = autonDelayCount-20; 
+			}
+		}
+		else
+		{
+			currentAutonState = STOP;
+		}
+	}
+	
 	private void stateActionBackUp(){
 		if(!Drivetrain.isMovingDistance()){
+			GearIntake.closeIntake();
 			currentAutonState = STOP;
 		}
 	}
 	
 	private void stateActionStop(){
 		Drivetrain.setMoveDistance(0.0, 0.0);
+	}
+	
+	private void setAutonDelay(int delay){
+		autonDelayCount = delay;
 	}
 
 }

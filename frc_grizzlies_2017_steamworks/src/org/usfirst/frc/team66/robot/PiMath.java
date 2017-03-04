@@ -11,7 +11,7 @@ public class PiMath {
 	public static double getTargetDistance() {
 		double distance;
 		double radians = Math.toRadians(getImageSizeInDeg());
-		distance = ((5.25)/(Math.tan(radians)));
+		distance = ((5.125)/(Math.tan(radians)));
 		
 		return distance; //returns distance to target in inches
 	}

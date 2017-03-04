@@ -32,7 +32,7 @@ public class Drivetrain {
 	private boolean isInverted = false;
 	private boolean isInvertPressed = false;
 	
-	private boolean isGyroZeroed = false;
+	private static boolean isGyroZeroed = false;
 	private boolean isDriveStraight = false;
 	
 	private static double targetDistance = 0.0;
@@ -77,6 +77,7 @@ public class Drivetrain {
 	
 	public void updateDrivetrainAuton(){
 		double distance_error;
+		double turn_error;
 		
 		if(isMovingDistance){
 			//Move distance without tracking vision target
@@ -110,7 +111,18 @@ public class Drivetrain {
 		}
 		else if(isTurningToVisionTarget)
 		{
-			//Turn until vision target centered
+			
+			//turn_error = Constants.MAX_TURN_TO_TARGET_ANGLE - Math.abs(gyro.getAngle());
+					
+			if(Math.abs(gyro.getAngle()) >= Constants.MAX_TURN_TO_TARGET_ANGLE){
+				targetThrottle = 0.0;
+				targetTurn = 0.0;
+				isTurningToVisionTarget = false;
+			}else
+			{
+				//Do Nothing while turning
+			}
+			/*//Turn until vision target centered
 			if(Math.abs(gyro.getAngle()) <= Constants.MAX_TURN_TO_TARGET_ANGLE){
 				if((PiMath.isValidTargetPresent() &&
 				   (!isTargetFound))){
@@ -146,7 +158,7 @@ public class Drivetrain {
 				targetThrottle = 0.0;
 				targetTurn = 0.0;
 				isTurningToVisionTarget = false;
-			}
+			}*/
 		}
 		else{
 			targetThrottle = 0.0;
@@ -230,7 +242,7 @@ public class Drivetrain {
 		
 	}
 	
-	public void zeroGyro(){
+	public static void zeroGyro(){
 		gyro.reset();
 		isGyroZeroed = true;
 	}
@@ -354,6 +366,7 @@ public class Drivetrain {
 		rightEncoder.reset();
 		
 		targetDistance = distance;
+		targetTurn = 0.0;
 		
 		if(Math.abs(targetDistance) > Constants.TARGET_DISTANCE_THRESHOLD){
 			isMovingDistance = true;
@@ -380,8 +393,8 @@ public class Drivetrain {
 	
 	public static void setTurnToTarget(double turn){
 		isTurningToVisionTarget	= true;
-		isTargetFound = false;
-		isTargetCentered = false;
+		//isTargetFound = false;
+		//isTargetCentered = false;
 		targetTurn = turn;
 	}
 	

@@ -19,40 +19,36 @@ public class Fuel {
 	public void updateFuelTelop(){
 		if(isLoadButtonPressed())
 		{
-			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * 1.0);
-			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * 1.0);
+			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * -1.0);
+			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * -1.0);
 			fuelUnloadSolenoid.set(false);
 		}
 		else if(isUnloadButtonPressed())
 		{
-			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * 1.0);
-			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * -1.0);
+			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * -1.0);
+			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * 1.0);
 			fuelUnloadSolenoid.set(true);
 		}
 		else
 		{
-			fuelLiftMotor.set(0.0);
+			fuelLiftMotor.set(getFuelUpDownSpeed());
 			fuelHopperMotor.set(0.0);
 			fuelUnloadSolenoid.set(false);
 		}
 	}
 	
 	private boolean isLoadButtonPressed(){
-		if(controller.getRawAxis(Constants.LEFT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return(controller.getRawButton(Constants.A_BUTTON));
 	}
 	
 	private boolean isUnloadButtonPressed(){
-		if(controller.getRawAxis(Constants.RIGHT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return(controller.getRawButton(Constants.Y_BUTTON));
+	}
+	
+	private static double getFuelUpDownSpeed(){
+		double v;
+		v = controller.getRawAxis(Constants.RIGHT_STICK_Y);
+		return (Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? v : 0.0);
 	}
 
 }

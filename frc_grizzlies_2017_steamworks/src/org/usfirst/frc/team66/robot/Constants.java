@@ -22,10 +22,12 @@ public class Constants {
 	
 	public static final int LEFT_STICK_Y  = 1;
 	public static final int RIGHT_STICK_X = 4;
-	public static final int RIGHT_TRIGGER = 3;//Drive = Shift Button, Operator = Unload Fuel
-	public static final int LEFT_TRIGGER  = 2;//Drive = Finesse Mode, Operator = Load Fuel
+	public static final int RIGHT_STICK_Y = 5;
+	public static final int RIGHT_TRIGGER = 3;//Drive = Shift Button,
+	public static final int LEFT_TRIGGER  = 2;//Drive = Finesse Mode,
 	public static final int BACK_BUTTON   = 7;//Invert
 	public static final int A_BUTTON      = 1;//Drive Straight
+	public static final int Y_BUTTON      = 4;
 	
 	public static final double DEAD_ZONE_LIMIT = 0.3;
 	public static final double TRIGGER_ACTIVE_THRESHOLD = 0.5;
@@ -51,11 +53,11 @@ public class Constants {
 	
 	public static final double AUTON_THROTTLE_VALUE       = 0.25;
 	
-	public static final double VISION_TARGET_THRESHOLD    = 30.0;
+	public static final double VISION_TARGET_THRESHOLD    = 20.0;
 	public static final double IR_SENSOR_THRESHOLD        = 12.0;
 	public static final int TARGET_INVALID_THRESHOLD      = 5;
 	
-	public static final double MAX_TURN_TO_TARGET_ANGLE   = 90.0;
+	public static final double MAX_TURN_TO_TARGET_ANGLE   = 60.0;
 	public static final double MIN_TURN_TO_TARGET_ANGLE	  = 30.0;
 	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
 	
@@ -88,8 +90,8 @@ public class Constants {
 			                                                      CounterBase.EncodingType.k4X);
 	 
 	//Fuel Config
-	public static final Talon FUEL_LIFT_MOTOR   = new Talon(0);
-	public static final Talon FUEL_HOPPER_MOTOR = new Talon(1);
+	public static final Talon FUEL_LIFT_MOTOR   = new Talon(1);
+	public static final Talon FUEL_HOPPER_MOTOR = new Talon(0);
 	
 	public static final boolean LIFT_MOTOR_INVERTED = false;
 	public static final double LIFT_MOTOR_DIRECTION = (LIFT_MOTOR_INVERTED ? -1:1);
@@ -116,7 +118,7 @@ public class Constants {
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();
 	
 	//Math Constants
-	public static final double CAMERA_WIDTH = 640;
-	public static final double FIELD_OF_VIEW = 54;
+	public static final double CAMERA_WIDTH = 480;
+	public static final double FIELD_OF_VIEW = 50;
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

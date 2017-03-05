@@ -3,36 +3,41 @@ import cv2
 import logging
 from networktables import NetworkTables
 
+#set networktable info
 logging.basicConfig(level=logging.DEBUG)
 NetworkTables.setClientMode()
-NetworkTables.initialize(server='10.4.70.78')
+NetworkTables.initialize(server='10.4.70.2')
 Table = NetworkTables.getTable("Table")
 
-camera = cv2.VideoCapture('http://10.4.70.87/mjpg/video.mjpg')
-#camera = cv2.VideoCapture(0)
-
-count = 1
+camera = cv2.VideoCapture('http://10.4.70.11/mjpg/video.mjpg') 
+#camera = cv2.VideoCapture(0) #switch from IP to USB
 
 while (True):
+    #read the current frame from camera
     (grabbed, frame) = camera.read()
 
+    #convert to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    green_lower = np.array([29, 105, 0],np.uint8)
-    green_upper = np.array([67, 255, 255],np.uint8)
+    #set min and max colour values
+    green_lower = np.array([72, 114, 169],np.uint8)
+    green_upper = np.array([255, 255, 255],np.uint8)
 
+    #create the range of colour min/max
     green_range = cv2.inRange(hsv, green_lower, green_upper)
 
+    #create blank area for sort
     areaArray = []
-    count = 1
     try:
+        #grab all contours based on colour range
         b, contours, _ = cv2.findContours(green_range, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
- 
+
+        #order contours into an array by area
         for i, c in enumerate(contours):
             area = cv2.contourArea(c)
             areaArray.append(area)
         
-        #first sort the array by area
+        #sort the array by greatest to smallest
         sorteddata = sorted(zip(areaArray, contours), key=lambda x: x[0], reverse=True)
         
         #find the nth largest contour [n-1][1], in this case 2
@@ -50,47 +55,42 @@ while (True):
              #find aspect ratio of contour
              aspect_ratio1 = float(wg)/hg
              aspect_ratio2 = float(w)/h
-             
+
              #set min and max ratios
              ratioMax = 0.75
-             ratioMin = 0.20
-             
-             #print(aspect_ratio1) #for debug
-             #print(aspect_ratio2)
+             ratioMin = 0.30
              
              #only run if contour is within ratioValues
              if (aspect_ratio1 and aspect_ratio2 <= ratioMax and aspect_ratio1 and aspect_ratio2 >= ratioMin):
-                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2)
-                 cv2.rectangle(frame, (xg,yg), (xg+wg, yg+hg), (0,255,0), 2)
                  
                  #create arrays
-                 Rect1 = [xg, yg, wg+wg, yg-hg]
+                 Rect1 = [xg, yg, xg+wg, yg-hg]
                  Rect2 = [x, y, x+w, y-h]
-                 
-                 #calculate information
-                 OverallWidth = abs((x+w)-(xg+wg))
-                 CenterOfTarget = [OverallWidth/2]
-                 CenterOfTargetCoords = ((x+w)+(xg+wg)/2)
+
+                 #make the largest values always right rect
+                 #this prevents negative values when not wanted
+                 if (xg+wg) > x:
+                    CenterOfTarget = [(xg+wg-x)/2]
+                 else:
+                    CenterOfTarget = [(x-xg+wg)/2]
+
+                 if x < (xg+w):
+                    CenterOfTargetCoords = (x+CenterOfTarget[0])
+                 else:
+                    CenterOfTargetCoords = (xg+w+CenterOfTarget[0])
 
                  #put values to networktable
-                 Table.putNumber("OverallWidth", OverallWidth)
                  Table.putNumber("CenterOfTargetCoords", CenterOfTargetCoords)
                  Table.putNumberArray("CenterOfTarget", CenterOfTarget)
                  Table.putNumberArray("Rect1", Rect1)
                  Table.putNumberArray("Rect2", Rect2)
                  Table.putBoolean("NoContoursFound", False)
-
-             else:
+                 
+             else: #contour not in aspect ratio
                  Table.putBoolean("NoContoursFound", True)
 
-    except IndexError:
+    except IndexError: #no contours found
         Table.putBoolean("NoContoursFound", True)
-    
-    #cv2.imshow("Frame", frame) #enable for debug
-    #key = cv2.waitKey(1) & 0xFF
-    
-    #if key ==ord("q"):
-        #break
     
 camera.release()
 cv2.destroyAllWindows()

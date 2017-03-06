@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
 	public static Drivetrain DRIVETRAIN;
 	public static GearIntake GEAR_INTAKE;
 	public static Fuel FUEL;
+	public static Climber CLIMBER;
 	public static AutonSupervisor AUTON_SUPERVISOR;
 
 	/**
@@ -44,6 +45,7 @@ public class Robot extends IterativeRobot {
 		AUTON_SUPERVISOR = new AutonSupervisor();
 		DRIVETRAIN = new Drivetrain();
 		GEAR_INTAKE = new GearIntake();
+		CLIMBER = new Climber();
 		FUEL = new Fuel();
 	}
 
@@ -107,6 +109,7 @@ public class Robot extends IterativeRobot {
 		DRIVETRAIN.updateDrivetrainTeleop();
 		GEAR_INTAKE.updateGearIntakeTelopPeriodic();
 		FUEL.updateFuelTelop();
+		CLIMBER.updateClimberTeleop();
 		//NetworkTables.getPiValues();
 		
 	}

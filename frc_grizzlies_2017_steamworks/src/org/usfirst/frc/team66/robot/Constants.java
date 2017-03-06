@@ -28,6 +28,7 @@ public class Constants {
 	public static final int BACK_BUTTON   = 7;//Invert
 	public static final int A_BUTTON      = 1;//Drive Straight
 	public static final int Y_BUTTON      = 4;
+	public static final int RIGHT_BUMPER  = 6;//Climb
 	
 	public static final double DEAD_ZONE_LIMIT = 0.3;
 	public static final double TRIGGER_ACTIVE_THRESHOLD = 0.5;
@@ -39,6 +40,8 @@ public class Constants {
 	public static final CANTalon LEFT_SLAVE_MOTOR   = new CANTalon(1);
 	public static final CANTalon RIGHT_MASTER_MOTOR = new CANTalon(2);
 	public static final CANTalon RIGHT_SLAVE_MOTOR  = new CANTalon(3);
+	
+	public static final CANTalon CLIMB_MOTOR = new CANTalon(4);
 	
 	public static final boolean LEFT_DRIVE_REVERSED   = true;
 	public static final boolean RIGHT_DRIVE_REVERSED  = false;

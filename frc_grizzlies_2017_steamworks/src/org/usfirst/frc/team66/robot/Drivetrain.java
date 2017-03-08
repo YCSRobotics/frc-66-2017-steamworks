@@ -77,7 +77,6 @@ public class Drivetrain {
 	
 	public void updateDrivetrainAuton(){
 		double distance_error;
-		double turn_error;
 		
 		if(isMovingDistance){
 			//Move distance without tracking vision target
@@ -96,8 +95,10 @@ public class Drivetrain {
 		}
 		else if(isMovingToVisionTarget){
 			//Move forward while tracking vision target
+			distance_error = targetDistance - getAverageDistance();
 			
-			if(PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD){
+			if((PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD) ||
+			   (Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD)){
 			//Reached minimum target distance so stop
 				targetThrottle = 0.0;
 				targetTurn     = 0.0;
@@ -379,8 +380,15 @@ public class Drivetrain {
 		}
 	}
 	
-	public static void setMoveToVisionTarget(double power){	
+	public static void setMoveToVisionTarget(double distance, double power){	
 			
+		//Reset Encoders because we want to measure distance from start
+				leftEncoder.reset();
+				rightEncoder.reset();
+				
+				targetDistance = distance;
+				targetTurn = 0.0;
+				
 			if(PiMath.getTargetDistance() > Constants.VISION_TARGET_THRESHOLD){
 				isMovingToVisionTarget = true;
 				targetThrottle = power;

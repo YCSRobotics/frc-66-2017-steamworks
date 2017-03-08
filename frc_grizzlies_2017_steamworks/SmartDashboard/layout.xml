@@ -1,0 +1,75 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Current Auton State" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="577"/>
+	</widget>
+	<widget field="Selected Routine" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="556"/>
+	</widget>
+	<widget field="Target Turn" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="535"/>
+	</widget>
+	<widget field="Is Target Reached" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="514"/>
+	</widget>
+	<widget field="Right Motor Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="493"/>
+	</widget>
+	<widget field="Is Target Centered" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="472"/>
+	</widget>
+	<widget field="Left Wheel Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="451"/>
+	</widget>
+	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="430"/>
+	</widget>
+	<widget field="Is Gyro Zeroed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="409"/>
+	</widget>
+	<widget field="Inverted" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="388"/>
+	</widget>
+	<widget field="Target Throttle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="367"/>
+	</widget>
+	<widget field="Raw Distance to Vision Target" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="346"/>
+	</widget>
+	<widget field="Is Driving Straight" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="325"/>
+	</widget>
+	<widget field="Is Target Valid" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="304"/>
+	</widget>
+	<widget field="Raw Angle to Vision Target" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="283"/>
+	</widget>
+	<widget field="Is Moving To Vision Target" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="262"/>
+	</widget>
+	<widget field="Is Turning To Target" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="241"/>
+	</widget>
+	<widget field="Gyro Rate" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="220"/>
+	</widget>
+	<widget field="Invert Button Pressed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="199"/>
+	</widget>
+	<widget field="Is Target Found" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="178"/>
+	</widget>
+	<widget field="Right Wheel Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="157"/>
+	</widget>
+	<widget field="Left Motor Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="136"/>
+	</widget>
+	<widget field="Auto choices" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="0"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

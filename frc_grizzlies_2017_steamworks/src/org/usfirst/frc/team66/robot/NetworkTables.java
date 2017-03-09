@@ -10,8 +10,8 @@ public class NetworkTables {
 		
 		//set table as client and connect to server
 		NetworkTable.setClientMode();
-		NetworkTable.setIPAddress("10.4.70.12");
-		NetworkTable.setTeam(470);
+		NetworkTable.setIPAddress("10.0.66.12");
+		NetworkTable.setTeam(66);
 		NetworkTable.initialize();
 			
 	}

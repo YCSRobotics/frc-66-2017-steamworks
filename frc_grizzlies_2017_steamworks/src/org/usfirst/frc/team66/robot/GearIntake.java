@@ -2,14 +2,18 @@ package org.usfirst.frc.team66.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 
 public class GearIntake {
 	
 	private static Joystick controller = Constants.OP_CONTROLLER;
 	
-	private static Talon leftGearMotor = Constants.LEFT_GEAR_MOTOR;
-	private static Talon rightGearMotor = Constants.RIGHT_GEAR_MOTOR;
+	//private static Talon leftGearMotor = Constants.LEFT_GEAR_MOTOR;
+	//private static Talon rightGearMotor = Constants.RIGHT_GEAR_MOTOR;
+	
+	private static Spark leftGearMotor = Constants.LEFT_GEAR_MOTOR;
+	private static Spark rightGearMotor = Constants.RIGHT_GEAR_MOTOR;
 	
 	private static Solenoid lowerIntakeSolenoid = Constants.LOWER_INTAKE_SOLENOID;
 	private static Solenoid openIntakeSolenoid = Constants.OPEN_INTAKE_SOLENOID;

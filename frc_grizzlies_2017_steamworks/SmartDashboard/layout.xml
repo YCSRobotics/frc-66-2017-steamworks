@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.MjpgStreamViewerImpl">
+		<location x="596" y="15"/>
+		<width>581</width>
+		<height>530</height>
+		<property name="MJPG Server URL" value="10.0.66.11/mjpg/video.mjpg"/>
+	</static-widget>
 	<widget field="Current Auton State" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="577"/>
 	</widget>

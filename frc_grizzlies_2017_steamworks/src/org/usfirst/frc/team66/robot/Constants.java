@@ -26,6 +26,7 @@ public class Constants {
 	public static final int RIGHT_TRIGGER = 3;//Drive = Shift Button,
 	public static final int LEFT_TRIGGER  = 2;//Drive = Finesse Mode,
 	public static final int BACK_BUTTON   = 7;//Invert
+	public static final int START_BUTTON  = 8;
 	public static final int A_BUTTON      = 1;//Drive Straight
 	public static final int Y_BUTTON      = 4;
 	public static final int RIGHT_BUMPER  = 6;//Climb
@@ -46,6 +47,8 @@ public class Constants {
 	public static final boolean LEFT_DRIVE_REVERSED   = true;
 	public static final boolean RIGHT_DRIVE_REVERSED  = false;
 	
+	public static final boolean ENABLE_DRIVE_BRAKE    = false;
+	
 	public static final double MIN_TALON_RAMP_RATE = 1.173;//This is the min ramp rate per CTRE documentation
 	public static final boolean RAMP_ENABLED       = true;
 	public static final double DRIVE_RAMP_TIME     = 0.25;//This is the time to ramp from 0V to +/-12V in sec
@@ -54,7 +57,7 @@ public class Constants {
 	
 	public static final double TARGET_DISTANCE_THRESHOLD  = 6.0;
 	
-	public static final double AUTON_THROTTLE_VALUE       = 0.25;
+	public static final double AUTON_THROTTLE_VALUE       = 0.30;
 	
 	public static final double VISION_TARGET_THRESHOLD    = 20.0;
 	public static final double IR_SENSOR_THRESHOLD        = 12.0;
@@ -63,6 +66,7 @@ public class Constants {
 	public static final double MAX_TURN_TO_TARGET_ANGLE   = 60.0;
 	public static final double MIN_TURN_TO_TARGET_ANGLE	  = 30.0;
 	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
+	public static final double TARGET_ANGLE_OFFSET		  = 3.0;
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
@@ -103,12 +107,12 @@ public class Constants {
 	
 	//Gear Intake Config
 	/*Comment out for practice robot*/
-	//public static final Spark LEFT_GEAR_MOTOR  = new Spark(2);
-	//public static final Spark RIGHT_GEAR_MOTOR = new Spark(3);
+	public static final Spark LEFT_GEAR_MOTOR  = new Spark(2);
+	public static final Spark RIGHT_GEAR_MOTOR = new Spark(3);
 	
 	/*Comment out for Competition Robot*/
-	public static final Talon LEFT_GEAR_MOTOR  = new Talon(2);
-	public static final Talon RIGHT_GEAR_MOTOR = new Talon(3);
+	//public static final Talon LEFT_GEAR_MOTOR  = new Talon(2);
+	//public static final Talon RIGHT_GEAR_MOTOR = new Talon(3);
 	
 	
 	//Solenoids
@@ -116,6 +120,7 @@ public class Constants {
 	public final static Solenoid OPEN_INTAKE_SOLENOID  = new Solenoid(1);
 	public final static Solenoid LOWER_INTAKE_SOLENOID = new Solenoid(2);
 	public final static Solenoid FUEL_UNLOAD_SOLENOID  = new Solenoid(3);
+	public final static Solenoid CLIMB_LATCH_SOLENOID  = new Solenoid(4);
 	
 	//Gyro
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();

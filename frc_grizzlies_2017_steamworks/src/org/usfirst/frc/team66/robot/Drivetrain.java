@@ -43,21 +43,16 @@ public class Drivetrain {
 	
 	private static boolean isTurningToVisionTarget	= false;
 	private static boolean isTargetFound = false;
-	private static boolean isTargetCentered = true;
+	
+	private static boolean isCenteringVisionTarget = false;
+	private static boolean isTargetCentered = false;
 	
 	private static int invalidTargetCount = 0;
 	
-	private static double distMovAveTable[] = {0,0,0,0,0};
-	private static double distMovAverage = 0;
-	private static int distMovAveIndx = 0;
-	
-	private static double angleMovAveTable[] = {0,0,0,0,0};
-	private static double angleMovAverage = 0;
-	private static int angleMovAveIndx = 0;
-	
-	
 	public Drivetrain() {		
 		
+		leftMasterMotor.enableBrakeMode(Constants.ENABLE_DRIVE_BRAKE);
+		leftSlaveMotor.enableBrakeMode(Constants.ENABLE_DRIVE_BRAKE);
 		leftMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		leftMasterMotor.setVoltageRampRate(Constants.DRIVE_RAMP_RATE);
 		leftSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -65,6 +60,8 @@ public class Drivetrain {
 		
 		leftEncoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		
+		rightMasterMotor.enableBrakeMode(Constants.ENABLE_DRIVE_BRAKE);
+		rightSlaveMotor.enableBrakeMode(Constants.ENABLE_DRIVE_BRAKE);
 		rightMasterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		rightMasterMotor.setVoltageRampRate(Constants.DRIVE_RAMP_RATE);
 		rightSlaveMotor.changeControlMode(CANTalon.TalonControlMode.Follower);
@@ -73,10 +70,13 @@ public class Drivetrain {
 		rightEncoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		
 		gyro.calibrate();
+		leftEncoder.reset();
+		rightEncoder.reset();
 	}
 	
 	public void updateDrivetrainAuton(){
 		double distance_error;
+		double vision_target_angle;
 		
 		if(isMovingDistance){
 			//Move distance without tracking vision target
@@ -107,7 +107,7 @@ public class Drivetrain {
 			}
 			else
 			{
-				targetTurn = -1*(-PiMath.angleToTarget()*Constants.GYRO_GAIN);
+				targetTurn = -1*(-1.0 * (PiMath.angleToTarget() + Constants.TARGET_ANGLE_OFFSET)*Constants.GYRO_GAIN);
 			}
 		}
 		else if(isTurningToVisionTarget)
@@ -161,6 +161,34 @@ public class Drivetrain {
 				isTurningToVisionTarget = false;
 			}*/
 		}
+		else if(isCenteringVisionTarget){
+			vision_target_angle = PiMath.angleToTarget();
+			
+			if((PiMath.isValidTargetPresent()) &&
+			   (Math.abs(vision_target_angle) >= Constants.TARGET_ANGLE_THRESHOLD)){			
+				if(vision_target_angle >= 0){
+					targetTurn = 0.4;
+				}
+				else{
+					targetTurn = -0.4;
+				}
+			}
+			else if((PiMath.isValidTargetPresent()) &&
+			        (Math.abs(PiMath.angleToTarget()) < Constants.TARGET_ANGLE_THRESHOLD)){
+				//Target found and is centered
+				targetTurn = 0.0;
+				isCenteringVisionTarget = false;
+				isTargetCentered = true;
+			}
+			else
+			{
+				//Target is not found
+				targetTurn = 0.0;
+				isCenteringVisionTarget = false;
+				isTargetCentered = false;
+			}
+			
+		}
 		else{
 			targetThrottle = 0.0;
 			targetTurn = 0.0;
@@ -180,11 +208,6 @@ public class Drivetrain {
 		double driveGain;
 		double throttle;
 		double turn;
-		
-		//Update vision target averages
-		
-		updateDistance3of5Average();
-		updateAngle3of5Average();
 		
 		//Handle invert toggle
 		setInvert();
@@ -356,7 +379,7 @@ public class Drivetrain {
 	
 	private void goStraight(){
 		targetThrottle = getThrottleInput();		
-		targetTurn = -1*(gyro.getAngle()/10);
+		targetTurn = -1*(gyro.getAngle()*Constants.GYRO_GAIN);
 	}
 	
 	public static void setMoveDistance(double distance, double power){
@@ -399,6 +422,11 @@ public class Drivetrain {
 			}
 	}
 	
+	public static void setCenterVisionTarget(){
+		isCenteringVisionTarget = true;
+		isTargetCentered = false;
+	}
+	
 	public static void setTurnToTarget(double turn){
 		isTurningToVisionTarget	= true;
 		//isTargetFound = false;
@@ -422,6 +450,10 @@ public class Drivetrain {
 		return isTurningToVisionTarget;
 	}
 	
+	public static boolean isCenteringVisionTarget(){
+		return isCenteringVisionTarget;
+	}
+	
 	public static boolean isVisionTargetCentered(){
 		return isTargetCentered;
 	}
@@ -432,51 +464,6 @@ public class Drivetrain {
 		return ave;
 	}
 	
-	private void updateDistance3of5Average(){
-		double maxValue = 1000;
-		double minValue = 0;
-		double sum = 0;
-		
-		distMovAveTable[distMovAveIndx] = PiMath.getTargetDistance();
-		
-		for(int i=0; i > 5; i++){
-			maxValue = Math.max(minValue, distMovAveTable[i]);
-			minValue = Math.min(maxValue, distMovAveTable[i]);
-			sum = sum + distMovAveTable[i];
-		}
-		
-		distMovAverage = (sum - maxValue - minValue)/3;
-		
-		if(distMovAveIndx == 4){
-			distMovAveIndx = 0;
-		}
-		else{
-			distMovAveIndx++;
-		}
-	}
-	
-	private void updateAngle3of5Average(){
-		double maxValue = 180;
-		double minValue = 0;
-		double sum = 0;
-		
-		angleMovAveTable[angleMovAveIndx] = PiMath.angleToTarget();
-		
-		for(int i=0; i > 5; i++){
-			maxValue = Math.max(minValue, angleMovAveTable[i]);
-			minValue = Math.min(maxValue, angleMovAveTable[i]);
-			sum = sum + angleMovAveTable[i];
-		}
-		
-		angleMovAverage = (sum - maxValue - minValue)/3;
-		
-		if(angleMovAveIndx == 4){
-			angleMovAveIndx = 0;
-		}
-		else{
-			angleMovAveIndx++;
-		}
-	}
 	private void updateTargetValidity(){
 		if(PiMath.isValidTargetPresent()){
 			//Target is valid, decrement Invalid Count

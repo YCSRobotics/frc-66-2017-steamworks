@@ -14,12 +14,14 @@ public class AutonSupervisor {
 	//Autonomous States
 	final static int START        			    = 0;
 	final static int MOVE_DISTANCE 			    = 1;
-	final static int MOVE_DISTANCE_TRACK_TARGET = 2;
-	final static int TURN_TO_TARGET 		    = 3;
-	final static int DELAY_AFTER_TURN			= 4;
-	final static int DELAY_AFTER_GEAR			= 5;
-	final static int BACK_UP					= 6;
-	final static int STOP					    = 7;
+	final static int CENTER_TARGET				= 2;
+	final static int MOVE_DISTANCE_TRACK_TARGET = 3;
+	final static int TURN_TO_TARGET 		    = 4;
+	final static int DELAY_AFTER_CENTER			= 5;
+	final static int DELAY_AFTER_TURN			= 6;
+	final static int DELAY_AFTER_GEAR			= 7;
+	final static int BACK_UP					= 8;
+	final static int STOP					    = 9;
 	
 	public static int selectedAutonRoutine;
 	public static int currentAutonState = 0;
@@ -43,6 +45,9 @@ public class AutonSupervisor {
 			break;
 		case MOVE_DISTANCE:
 			stateActionMoveDistance();
+			break;
+		case CENTER_TARGET:
+			stateActionCenterTarget();
 			break;
 		case MOVE_DISTANCE_TRACK_TARGET:
 			stateActionMoveDistanceTrackTarget();
@@ -81,12 +86,14 @@ public class AutonSupervisor {
 			}
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
-				Drivetrain.setMoveDistance(60.0, 0.25);
+				Drivetrain.setMoveDistance(40.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
 				Drivetrain.setMoveToVisionTarget(66.0, Constants.AUTON_THROTTLE_VALUE);
 				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				//Drivetrain.setMoveDistance(12.0, Constants.AUTON_THROTTLE_VALUE);
+				//currentAutonState = MOVE_DISTANCE;
 			}
 			else{
 				currentAutonState = STOP;
@@ -104,7 +111,11 @@ public class AutonSupervisor {
 		   (selectedAutonRoutine == PLACE_LEFT_GEAR)){
 			if(!Drivetrain.isMovingDistance()){
 				//Move is complete, go to next state
-				if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
+				if(selectedAutonRoutine == PLACE_CENTER_GEAR){
+					Drivetrain.setCenterVisionTarget();
+					selectedAutonRoutine = CENTER_TARGET;
+				}
+				else if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
 					Drivetrain.setTurnToTarget(-0.4);
 					currentAutonState = TURN_TO_TARGET;
 				}
@@ -126,6 +137,23 @@ public class AutonSupervisor {
 			//Should never get here
 			currentAutonState = STOP;
 		}
+	}
+	
+	private void stateActionCenterTarget(){
+		if((!Drivetrain.isCenteringVisionTarget()) &&
+		   (Drivetrain.isVisionTargetCentered())){
+			//Target is centered
+			//Drivetrain.setMoveToVisionTarget(50.0, Constants.AUTON_THROTTLE_VALUE);
+			//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			currentAutonState = STOP;
+		}else if((!Drivetrain.isCenteringVisionTarget()) &&
+				 (!Drivetrain.isVisionTargetCentered())){
+			//Target was never found or lost
+			currentAutonState = STOP;
+		}
+		else{
+			//Still centering target
+		}	
 	}
 	
 	private void stateActionMoveDistanceTrackTarget(){
@@ -189,6 +217,52 @@ public class AutonSupervisor {
 	private void stateActionDelayAfterTurn()
 	{
 		if((selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
+		{
+			
+			if(autonDelayCount <= 20){
+				autonDelayCount = 0;
+				Drivetrain.setMoveToVisionTarget(36.0, 0.20);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			}
+			else
+			{
+				autonDelayCount = autonDelayCount-20; 
+			}
+		}
+		else
+		{
+			currentAutonState = STOP;
+		}
+	}
+	
+	private void stateActionDelayAfterCenter()
+	{
+		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
+		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
+		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
+		{
+			
+			if(autonDelayCount <= 20){
+				autonDelayCount = 0;
+				Drivetrain.setMoveToVisionTarget(36.0, 0.20);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			}
+			else
+			{
+				autonDelayCount = autonDelayCount-20; 
+			}
+		}
+		else
+		{
+			currentAutonState = STOP;
+		}
+	}
+	
+	private void stateActionDelayAfterMove()
+	{
+		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
+		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
 		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
 		{
 			

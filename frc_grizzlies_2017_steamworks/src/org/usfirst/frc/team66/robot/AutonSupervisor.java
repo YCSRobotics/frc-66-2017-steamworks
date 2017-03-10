@@ -81,22 +81,17 @@ public class AutonSupervisor {
 	private void stateActionStart(){
 		if(selectedAutonRoutine != DO_NOTHING){
 			if(selectedAutonRoutine == CROSS_BASELINE){
-				Drivetrain.zeroGyro();
-				Drivetrain.setMoveDistance(60.0, Constants.AUTON_THROTTLE_VALUE);
+				Drivetrain.setMoveDistance(96.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
-				Drivetrain.zeroGyro();
-				Drivetrain.setMoveDistance(40.0, Constants.AUTON_THROTTLE_VALUE);
+				Drivetrain.setMoveDistance(40.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
-				Drivetrain.zeroGyro();
-				//Drivetrain.setMoveToVisionTarget(66.0, Constants.AUTON_THROTTLE_VALUE);
-				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-				Drivetrain.setMoveDistance(35.0, Constants.AUTON_THROTTLE_VALUE);
-				currentAutonState = MOVE_DISTANCE;
+				Drivetrain.setMoveToVisionTarget(66.0, Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 			}
 			else{
 				currentAutonState = STOP;
@@ -115,9 +110,8 @@ public class AutonSupervisor {
 			if(!Drivetrain.isMovingDistance()){
 				//Move is complete, go to next state
 				if(selectedAutonRoutine == PLACE_CENTER_GEAR){
-					GearIntake.openIntake();
-					setAutonDelay(500);
-					currentAutonState = DELAY_AFTER_GEAR;
+					Drivetrain.setCenterVisionTarget();
+					selectedAutonRoutine = CENTER_TARGET;
 				}
 				else if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
 					Drivetrain.setTurnToTarget(-0.4);

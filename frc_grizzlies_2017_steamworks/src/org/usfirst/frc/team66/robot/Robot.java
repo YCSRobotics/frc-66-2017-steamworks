@@ -132,6 +132,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		///System.out.println(NetworkTables.CenterOfTargetCoords());
 	}
 }
 

@@ -92,6 +92,8 @@ public class AutonSupervisor {
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
 				Drivetrain.setMoveToVisionTarget(66.0, Constants.AUTON_THROTTLE_VALUE);
 				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				//Drivetrain.setMoveDistance(12.0, Constants.AUTON_THROTTLE_VALUE);
+				//currentAutonState = MOVE_DISTANCE;
 			}
 			else{
 				currentAutonState = STOP;

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team66.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +43,17 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Place Left Gear", placeLeftGearAuto);
 		
 		SmartDashboard.putData("Auto choices", chooser);
+		
+		//set up USB camera server
+		try{
+			//UsbCamera camera = CameraServer.getInstance().startAutomaticCapture("cam1", 1);
+			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+			camera.setFPS(7);
+			camera.setResolution(320, 280);
+		}
+		catch(Exception e){
+			
+		}
 		
 		AUTON_SUPERVISOR = new AutonSupervisor();
 		DRIVETRAIN = new Drivetrain();

@@ -1,9 +1,11 @@
 package org.usfirst.frc.team66.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class PiMath {
 	
 	static double getImageSizeInDeg() {
-		double nPixels = NetworkTables.CenterOfTarget()[0];
+		double nPixels = SmartDashboard.getNumber("CenterOfTarget", 0);
 		
 		return (nPixels * Constants.DEG_PER_PIXEL);
 	}
@@ -17,14 +19,14 @@ public class PiMath {
 	}
 	
 	public static double angleToTarget() {
-		double degAngle = ((NetworkTables.CenterOfTargetCoords() - 
+		double degAngle = ((SmartDashboard.getNumber("CenterOfTargetCoords", 0) - 
 				(Constants.CAMERA_WIDTH/2)) * Constants.DEG_PER_PIXEL);
 		
 		return degAngle; //returns the angle to target
 	}
 	
 	public static boolean isValidTargetPresent(){
-		return(!NetworkTables.NoContoursFound());
+		return(!SmartDashboard.getBoolean("NoContoursFound", true));
 	}
 }
 

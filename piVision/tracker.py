@@ -70,18 +70,18 @@ while (True):
                  #make the largest values always right rect
                  #this prevents negative values when not wanted
                  if (xg+wg) > x:
-                    CenterOfTarget = [(xg+wg-x)/2]
+                    CenterOfTarget = (xg+wg-x)/2
                  else:
-                    CenterOfTarget = [(x-xg+wg)/2]
+                    CenterOfTarget = (x-xg+wg)/2
 
                  if x < (xg+w):
-                    CenterOfTargetCoords = (x+CenterOfTarget[0])
+                    CenterOfTargetCoords = (x+CenterOfTarget)
                  else:
-                    CenterOfTargetCoords = (xg+w+CenterOfTarget[0])
+                    CenterOfTargetCoords = (xg+w+CenterOfTarget)
 
                  #put values to networktable
                  Table.putNumber("CenterOfTargetCoords", CenterOfTargetCoords)
-                 Table.putNumberArray("CenterOfTarget", CenterOfTarget)
+                 Table.putNumber("CenterOfTarget", CenterOfTarget)
                  Table.putNumberArray("Rect1", Rect1)
                  Table.putNumberArray("Rect2", Rect2)
                  Table.putBoolean("NoContoursFound", False)

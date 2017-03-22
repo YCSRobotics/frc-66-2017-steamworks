@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Talon;
 public class Fuel {
 	private static Joystick controller = Constants.OP_CONTROLLER;
 	
-	private static Talon fuelLiftMotor = Constants.FUEL_LIFT_MOTOR;
 	private static Talon fuelHopperMotor = Constants.FUEL_HOPPER_MOTOR;
 	
 	private static Solenoid fuelUnloadSolenoid = Constants.FUEL_UNLOAD_SOLENOID;
@@ -19,19 +18,16 @@ public class Fuel {
 	public void updateFuelTelop(){
 		if(isLoadButtonPressed())
 		{
-			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * -1.0);
 			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * -1.0);
 			fuelUnloadSolenoid.set(false);
 		}
 		else if(isUnloadButtonPressed())
 		{
-			fuelLiftMotor.set(Constants.LIFT_MOTOR_DIRECTION * -1.0);
 			fuelHopperMotor.set(Constants.HOPPER_MOTOR_DIRECTION * 1.0);
 			fuelUnloadSolenoid.set(true);
 		}
 		else
 		{
-			fuelLiftMotor.set(getFuelUpDownSpeed());
 			fuelHopperMotor.set(0.0);
 			fuelUnloadSolenoid.set(false);
 		}

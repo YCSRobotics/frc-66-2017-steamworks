@@ -2,27 +2,18 @@ package org.usfirst.frc.team66.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 
 public class GearIntake {
 	
 	private static Joystick controller = Constants.OP_CONTROLLER;
 	
-	//private static Talon leftGearMotor = Constants.LEFT_GEAR_MOTOR;
-	//private static Talon rightGearMotor = Constants.RIGHT_GEAR_MOTOR;
-	
-	private static Spark leftGearMotor = Constants.LEFT_GEAR_MOTOR;
-	private static Spark rightGearMotor = Constants.RIGHT_GEAR_MOTOR;
+	private static Talon gearIntakeMotor = Constants.GEAR_INTAKE_MOTOR;
 	
 	private static Solenoid lowerIntakeSolenoid = Constants.LOWER_INTAKE_SOLENOID;
-	private static Solenoid openIntakeSolenoid = Constants.OPEN_INTAKE_SOLENOID;
 	
 	private boolean isIntakeLowered;
 	private boolean isRaiseIntakePressed;
-	
-	private static boolean isIntakeOpen;
-	private boolean isOpenIntakePressed;
 	
 	public GearIntake(){
 
@@ -31,20 +22,19 @@ public class GearIntake {
 	public void updateGearIntakeTelopPeriodic(){
 		
 		double intakeSpeed;
-		double rotateSpeed;
 		
 		toggleRaiseIntake();
-		toggleOpenIntake();
 		
-		intakeSpeed = getGearInOutSpeed();
+		//intakeSpeed = getGearInOutSpeed();
 		
-		if(Math.abs(intakeSpeed) > 0){
-			leftGearMotor.set(intakeSpeed);
-			rightGearMotor.set(-1.0*intakeSpeed);
+		if(controller.getRawButton(Constants.A_BUTTON)){
+			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_EJECT_SPEED);
+		}
+		else if(isIntakeGearButtonPressed()){
+			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_INTAKE_SPEED);
 		}
 		else{
-			leftGearMotor.set(0.0);
-			rightGearMotor.set(0.0);
+			gearIntakeMotor.set(0.0);
 		}
 	}
 	
@@ -57,7 +47,7 @@ public class GearIntake {
 		}
 	}
 	
-	private boolean isOpenIntakeButtonPressed(){
+	private boolean isIntakeGearButtonPressed(){
 		if(controller.getRawAxis(Constants.RIGHT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD){
 			return true;
 		}
@@ -65,7 +55,6 @@ public class GearIntake {
 			return false;
 		}
 	}
-	
 	private void toggleRaiseIntake(){
 		if((isRaiseIntakeButtonPressed()) &&
 		   (!isRaiseIntakePressed)){
@@ -77,7 +66,6 @@ public class GearIntake {
 		    	//Intake is lowered, so close and raise intake (solenoid off)
 		    	isIntakeLowered = false;
 		    	lowerIntakeSolenoid.set(false);
-		    	//openIntakeSolenoid.set(false);
 			} 
 			else {
 				//Intake is raised, so lower intake (solenoid on)
@@ -93,40 +81,14 @@ public class GearIntake {
 		}
 	}
 	
-	private void toggleOpenIntake(){
-		if((isOpenIntakeButtonPressed()) &&
-		   (!isOpenIntakePressed)){
-			
-			//Button transitions from false to true, set button active flag	
-			isOpenIntakePressed = true;
-					
-		    if(isIntakeOpen){
-		    	//Intake is open, so close intake (solenoid off)
-		    	isIntakeOpen = false;
-		    	openIntakeSolenoid.set(false);
-			} 
-			else {
-				//Intake is raised, so lower intake (solenoid on)
-				isIntakeOpen = true;
-				openIntakeSolenoid.set(true);
-			}
+	public static void commandGearEject(boolean command){
+		if(command){
+			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_EJECT_SPEED);
 		}
-		else if (!(isOpenIntakeButtonPressed())){
-			isOpenIntakePressed = false;
+		else
+		{
+			gearIntakeMotor.set(0.0);
 		}
-		else{
-			//Do nothing, button is still pressed
-		}
-	}
-	
-	public static void openIntake(){
-		isIntakeOpen = true;
-		openIntakeSolenoid.set(true);
-	}
-	
-	public static void closeIntake(){
-		isIntakeOpen = false;
-		openIntakeSolenoid.set(false);
 	}
 	
 	private static double getGearInOutSpeed(){

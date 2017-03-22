@@ -121,7 +121,7 @@ public class Robot extends IterativeRobot {
 		
 		DRIVETRAIN.updateDrivetrainTeleop();
 		GEAR_INTAKE.updateGearIntakeTelopPeriodic();
-		FUEL.updateFuelTelop();
+		//FUEL.updateFuelTelop();
 		CLIMBER.updateClimberTeleop();
 		//NetworkTables.getPiValues();
 		

@@ -62,15 +62,15 @@ public class Constants {
 	public static final double IR_SENSOR_THRESHOLD        = 12.0;
 	public static final int TARGET_INVALID_THRESHOLD      = 5;
 	
-	public static final double MAX_TURN_TO_TARGET_ANGLE   = 60.0;
+	public static final double MAX_TURN_TO_TARGET_ANGLE   = 55.0;
 	public static final double MIN_TURN_TO_TARGET_ANGLE	  = 30.0;
 	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
-	public static final double TARGET_ANGLE_OFFSET		  = 3.0;
+	public static final double TARGET_ANGLE_OFFSET		  = 0.0;
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
 	public static final double SKIM_GAIN	= 0.3;
-	public static final double GYRO_GAIN    = 0.02;
+	public static final double GYRO_GAIN    = 0.03;
 	
 	//Drive Encoder Config
 	public static final int LEFT_ENCODER_CHANNEL_A  = 0;
@@ -110,7 +110,7 @@ public class Constants {
 	public static final double GEAR_INTAKE_MOTOR_DIRECTION = (GEAR_INTAKE_MOTOR_INVERTED ? -1:1);
 	
 	public static final double GEAR_INTAKE_SPEED = 1.0;
-	public static final double GEAR_EJECT_SPEED = -1.0;
+	public static final double GEAR_EJECT_SPEED = -0.75;
 	
 	//Solenoids
 	public final static Solenoid SHIFT_SOLENOID        = new Solenoid(0);
@@ -122,7 +122,7 @@ public class Constants {
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();
 	
 	//Math Constants
-	public static final double CAMERA_WIDTH = 480;
-	public static final double FIELD_OF_VIEW = 50;
+	public static final double CAMERA_WIDTH = 640;
+	public static final double FIELD_OF_VIEW = 67;
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

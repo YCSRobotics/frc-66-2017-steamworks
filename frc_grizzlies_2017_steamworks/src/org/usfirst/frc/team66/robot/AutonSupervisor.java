@@ -88,12 +88,12 @@ public class AutonSupervisor {
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
 				Drivetrain.zeroGyro();
-				Drivetrain.setMoveDistance(40.0, 0.25);
+				Drivetrain.setMoveDistance(72.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
 				Drivetrain.zeroGyro();
-				Drivetrain.setMoveToVisionTarget(66.0, Constants.AUTON_THROTTLE_VALUE);
+				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
 				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 				//Drivetrain.setMoveDistance(37.0, Constants.AUTON_THROTTLE_VALUE);
 				//currentAutonState = MOVE_DISTANCE;
@@ -207,7 +207,7 @@ public class AutonSupervisor {
 			if(autonDelayCount <= 20){
 				autonDelayCount = 0;
 				GearIntake.commandGearEject(false);
-				Drivetrain.setMoveDistance(-18, -0.15);
+				Drivetrain.setMoveDistance(-30, -0.15);
 				Drivetrain.zeroGyro();
 				currentAutonState = BACK_UP;
 			}

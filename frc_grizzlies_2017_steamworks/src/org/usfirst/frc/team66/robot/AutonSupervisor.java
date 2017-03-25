@@ -88,7 +88,7 @@ public class AutonSupervisor {
 			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
 					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
 				Drivetrain.zeroGyro();
-				Drivetrain.setMoveDistance(72.0, 0.25);
+				Drivetrain.setMoveDistance(72.0, 0.35);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
@@ -230,7 +230,7 @@ public class AutonSupervisor {
 			
 			if(autonDelayCount <= 20){
 				autonDelayCount = 0;
-				Drivetrain.setMoveToVisionTarget(36.0, 0.20);
+				Drivetrain.setMoveToVisionTarget(65.0, 0.30);
 				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 			}
 			else

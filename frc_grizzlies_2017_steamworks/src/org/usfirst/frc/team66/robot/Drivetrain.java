@@ -206,8 +206,6 @@ public class Drivetrain {
 		//To be called from TeleopPeriodic every 20ms
 		
 		double driveGain;
-		double throttle;
-		double turn;
 		
 		//Handle invert toggle
 		setInvert();
@@ -220,12 +218,14 @@ public class Drivetrain {
 			driveGain = 1.0;
 		}
 		
-		if((controller.getRawButton(Constants.A_BUTTON)) &&
+		isDriveStraight = isDriveStraightConditionPresent();
+		
+		if((isDriveStraight) &&
 		   (!isGyroZeroed)){
 			//Gyro not zeroed, reset zero and wait one loop
 			zeroGyro();
 		}
-		else if(controller.getRawButton(Constants.A_BUTTON)){
+		else if(isDriveStraight){
 			//Drive Straight pressed and gyro zeored
 			goStraight();
 			isDriveStraight = true;
@@ -235,7 +235,7 @@ public class Drivetrain {
 			targetThrottle = getThrottleInput();
 			targetTurn = getTurnInput();
 			isGyroZeroed = false;
-			isDriveStraight = false;
+			//isDriveStraight = false;
 		}
 
 		setTargetSpeeds(targetThrottle, targetTurn);
@@ -307,11 +307,12 @@ public class Drivetrain {
 		double v;
 		v = controller.getRawAxis(Constants.RIGHT_STICK_X);
 		
-		if(getThrottleInput() < 0){
+		return(v);
+		/*if(getThrottleInput() < 0){
 			return(Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? -(v) : 0.0);
 		}else{
 			return(Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? v : 0.0);
-		}
+		}*/
 	}
 		
 	
@@ -464,25 +465,16 @@ public class Drivetrain {
 		return ave;
 	}
 	
-	private void updateTargetValidity(){
-		if(PiMath.isValidTargetPresent()){
-			//Target is valid, decrement Invalid Count
-			if(invalidTargetCount > 0){
-				invalidTargetCount--;
-			}
-			else{
-				//Don't decrement below 0
-			}
+	private boolean isDriveStraightConditionPresent(){
+		/*if((Math.abs(getThrottleInput()) > 0) && 
+		   (getTurnInput() == 0)){
+			return true;
 		}
-		else{
-			//Invalid target, increment counter
-			if(invalidTargetCount < Constants.TARGET_INVALID_THRESHOLD){
-				invalidTargetCount++;
-			}
-			else{
-				//Don't increment above threshold
-			}
-		}
+		else
+		{
+			return false;
+		}*/
+		return controller.getRawButton(Constants.A_BUTTON);
 	}
 	
 }

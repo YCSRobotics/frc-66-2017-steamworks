@@ -1,8 +1,10 @@
 package org.usfirst.frc.team66.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GearIntake {
 	
@@ -12,8 +14,17 @@ public class GearIntake {
 	
 	private static Solenoid lowerIntakeSolenoid = Constants.LOWER_INTAKE_SOLENOID;
 	
+	private static DigitalInput gearSensor = Constants.GEAR_SENSOR;
+	
 	private boolean isIntakeLowered;
 	private boolean isRaiseIntakePressed;
+	
+	//Auto Intake States
+	final static int IDLE 	  = 0;
+	final static int LOADING  = 1;
+	final static int LOADED   = 2;
+			
+	private int autoIntakeState = IDLE;
 	
 	public GearIntake(){
 
@@ -36,6 +47,13 @@ public class GearIntake {
 		else{
 			gearIntakeMotor.set(0.0);
 		}
+		
+		SmartDashboard.putBoolean("Gear Sensor State", gearSensor.get());
+		
+	}
+	
+	private void processAutoIntakeEvent(int event){
+		
 	}
 	
 	private boolean isRaiseIntakeButtonPressed(){
@@ -55,6 +73,12 @@ public class GearIntake {
 			return false;
 		}
 	}
+	
+	private boolean isIntakeAutoLoadButtonPressed(){
+		//Stub
+		return false;
+	}
+	
 	private void toggleRaiseIntake(){
 		if((isRaiseIntakeButtonPressed()) &&
 		   (!isRaiseIntakePressed)){
@@ -91,10 +115,6 @@ public class GearIntake {
 		}
 	}
 	
-	private static double getGearInOutSpeed(){
-		double v;
-		v = controller.getRawAxis(Constants.LEFT_STICK_Y);
-		return (Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? v : 0.0);
-	}
+
 
 }

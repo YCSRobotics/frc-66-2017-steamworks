@@ -207,7 +207,7 @@ public class AutonSupervisor {
 			if(autonDelayCount <= 20){
 				autonDelayCount = 0;
 				GearIntake.commandGearEject(false);
-				Drivetrain.setMoveDistance(-30, -0.15);
+				Drivetrain.setMoveDistance(-30, -0.45);
 				Drivetrain.zeroGyro();
 				currentAutonState = BACK_UP;
 			}

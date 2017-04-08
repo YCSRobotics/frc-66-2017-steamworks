@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Constants {
 	
@@ -69,7 +70,7 @@ public class Constants {
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
-	public static final double SKIM_GAIN	= 0.3;
+	public static final double SKIM_GAIN	= 0.15;
 	public static final double GYRO_GAIN    = 0.03;
 	
 	//Drive Encoder Config
@@ -111,6 +112,8 @@ public class Constants {
 	
 	public static final double GEAR_INTAKE_SPEED = 1.0;
 	public static final double GEAR_EJECT_SPEED = -0.75;
+	
+	public static final DigitalInput GEAR_SENSOR = new DigitalInput(4);
 	
 	//Solenoids
 	public final static Solenoid SHIFT_SOLENOID        = new Solenoid(0);

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -63,10 +64,10 @@ public class Constants {
 	public static final double IR_SENSOR_THRESHOLD        = 12.0;
 	public static final int TARGET_INVALID_THRESHOLD      = 5;
 	
-	public static final double MAX_TURN_TO_TARGET_ANGLE   = 55.0;
-	public static final double MIN_TURN_TO_TARGET_ANGLE	  = 30.0;
-	public static final double TARGET_ANGLE_THRESHOLD	  = 5.0;
-	public static final double TARGET_ANGLE_OFFSET		  = 0.0;
+	public static final double TURN_TO_TARGET_ANGLE   = 55.0;
+	public static final double TURN_TO_BOILER_ANGLE   = 10.0;
+	public static final double TARGET_ANGLE_THRESHOLD = 5.0;
+	public static final double TARGET_ANGLE_OFFSET    = 0.0;
 	
 	public static final double FINESSE_GAIN = 0.6;
 	public static final double TURN_GAIN    = 1.0;
@@ -120,6 +121,9 @@ public class Constants {
 	public final static Solenoid LOWER_INTAKE_SOLENOID = new Solenoid(1);
 	public final static Solenoid CLIMB_LATCH_SOLENOID  = new Solenoid(2);
 	public final static Solenoid FUEL_UNLOAD_SOLENOID  = new Solenoid(3);
+	
+	//Relays
+	public final static Relay LIGHT_RELAY = new Relay(0);
 	
 	//Gyro
 	public final static ADXRS450_Gyro GYRO = new ADXRS450_Gyro();

@@ -25,6 +25,8 @@ public class Drivetrain {
 	
 	private static double targetThrottle = 0.0;
 	private static double targetTurn = 0.0;
+	private static double targetAngle = 0.0;
+	
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
 	
@@ -111,83 +113,17 @@ public class Drivetrain {
 			}
 		}
 		else if(isTurningToVisionTarget)
-		{
-			
-			//turn_error = Constants.MAX_TURN_TO_TARGET_ANGLE - Math.abs(gyro.getAngle());
-					
-			if(Math.abs(gyro.getAngle()) >= Constants.MAX_TURN_TO_TARGET_ANGLE){
-				targetThrottle = 0.0;
-				targetTurn = 0.0;
-				isTurningToVisionTarget = false;
-			}else
+		{			
+			if(Math.abs(gyro.getAngle()) >= targetAngle)
 			{
-				//Do Nothing while turning
-			}
-			/*//Turn until vision target centered
-			if(Math.abs(gyro.getAngle()) <= Constants.MAX_TURN_TO_TARGET_ANGLE){
-				if((PiMath.isValidTargetPresent() &&
-				   (!isTargetFound))){
-					//Set a flag the first time we see the target
-					isTargetFound = true;
-				}
-				else{
-					//Do nothing if we never see target
-				}
-				
-				if((isTargetFound) &&
-				   (Math.abs(gyro.getAngle()) >= Constants.MIN_TURN_TO_TARGET_ANGLE)){		   	
-					
-					if(Math.abs(PiMath.angleToTarget()) <= Constants.TARGET_ANGLE_THRESHOLD){
-						//Target is centered so stop turning
-						targetThrottle = 0.0;
-						targetTurn = 0.0;
-						isTargetCentered = true;
-						isTurningToVisionTarget = false;
-					}
-					else
-					{
-						//Target not centered, so keep turning
-					}
-				}
-				else{
-					//Keep turning until max turn reached or target found
-				}
-					
-			}
-			else{
-				//Never saw target
 				targetThrottle = 0.0;
 				targetTurn = 0.0;
 				isTurningToVisionTarget = false;
-			}*/
-		}
-		else if(isCenteringVisionTarget){
-			vision_target_angle = PiMath.angleToTarget();
-			
-			if((PiMath.isValidTargetPresent()) &&
-			   (Math.abs(vision_target_angle) >= Constants.TARGET_ANGLE_THRESHOLD)){			
-				if(vision_target_angle >= 0){
-					targetTurn = 0.4;
-				}
-				else{
-					targetTurn = -0.4;
-				}
-			}
-			else if((PiMath.isValidTargetPresent()) &&
-			        (Math.abs(PiMath.angleToTarget()) < Constants.TARGET_ANGLE_THRESHOLD)){
-				//Target found and is centered
-				targetTurn = 0.0;
-				isCenteringVisionTarget = false;
-				isTargetCentered = true;
 			}
 			else
 			{
-				//Target is not found
-				targetTurn = 0.0;
-				isCenteringVisionTarget = false;
-				isTargetCentered = false;
+				//Do Nothing while turning
 			}
-			
 		}
 		else{
 			targetThrottle = 0.0;
@@ -428,10 +364,9 @@ public class Drivetrain {
 		isTargetCentered = false;
 	}
 	
-	public static void setTurnToTarget(double turn){
+	public static void setTurnToTarget(double turn, double angle){
 		isTurningToVisionTarget	= true;
-		//isTargetFound = false;
-		//isTargetCentered = false;
+		targetAngle = Math.abs(angle);//angle must always be positive 
 		targetTurn = turn;
 	}
 	

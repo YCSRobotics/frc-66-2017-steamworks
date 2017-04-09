@@ -5,23 +5,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutonSupervisor {
 	
 	//Autonomous Routines
-	final static int DO_NOTHING        = 0;
-	final static int CROSS_BASELINE    = 1;
-	final static int PLACE_CENTER_GEAR = 2;
-	final static int PLACE_RIGHT_GEAR  = 3;
-	final static int PLACE_LEFT_GEAR   = 4;
+	final static int DO_NOTHING           = 0;
+	final static int CROSS_BASELINE       = 1;
+	final static int PLACE_CENTER_GEAR    = 2;
+	final static int PLACE_RIGHT_GEAR     = 3;
+	final static int PLACE_LEFT_GEAR   	  = 4;
+	final static int RED_GEAR_AND_BOILER  = 5;
+	final static int BLUE_GEAR_AND_BOILER = 6;
 	
 	//Autonomous States
 	final static int START        			    = 0;
 	final static int MOVE_DISTANCE 			    = 1;
-	final static int CENTER_TARGET				= 2;
-	final static int MOVE_DISTANCE_TRACK_TARGET = 3;
-	final static int TURN_TO_TARGET 		    = 4;
-	final static int DELAY_AFTER_CENTER			= 5;
-	final static int DELAY_AFTER_TURN			= 6;
-	final static int DELAY_AFTER_GEAR			= 7;
-	final static int BACK_UP					= 8;
-	final static int STOP					    = 9;
+	final static int MOVE_DISTANCE_TRACK_TARGET = 2;
+	final static int TURN_TO_TARGET 		    = 3;
+	final static int DELAY_AFTER_TURN			= 4;
+	final static int DELAY_AFTER_GEAR			= 5;
+	final static int BACK_UP					= 6;
+	final static int TURN_TO_BOILER				= 7;
+	final static int TURN_TO_BOILER_DELAY		= 8;
+	final static int MOVE_TO_BOILER				= 9;
+	final static int STOP					    = 10;
 	
 	public static int selectedAutonRoutine;
 	public static int currentAutonState = 0;
@@ -46,9 +49,6 @@ public class AutonSupervisor {
 		case MOVE_DISTANCE:
 			stateActionMoveDistance();
 			break;
-		case CENTER_TARGET:
-			stateActionCenterTarget();
-			break;
 		case MOVE_DISTANCE_TRACK_TARGET:
 			stateActionMoveDistanceTrackTarget();
 			break;
@@ -63,6 +63,15 @@ public class AutonSupervisor {
 			break;
 		case BACK_UP:
 			stateActionBackUp();
+			break;
+		case TURN_TO_BOILER:
+			stateActionTurnToBoiler();
+			break;
+		case TURN_TO_BOILER_DELAY:
+			stateActionTurnToBoilerDelay();
+			break;
+		case MOVE_TO_BOILER:
+			stateActionMoveToBoiler();
 			break;
 		case STOP:
 		default:
@@ -85,8 +94,10 @@ public class AutonSupervisor {
 				Drivetrain.setMoveDistance(96.0, 0.25);
 				currentAutonState = MOVE_DISTANCE;
 			}
-			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
-					(selectedAutonRoutine == PLACE_LEFT_GEAR)){
+			else if((selectedAutonRoutine == PLACE_RIGHT_GEAR)    ||
+					(selectedAutonRoutine == PLACE_LEFT_GEAR)     ||
+					(selectedAutonRoutine == RED_GEAR_AND_BOILER) ||
+					(selectedAutonRoutine == BLUE_GEAR_AND_BOILER)){
 				Drivetrain.zeroGyro();
 				Drivetrain.setMoveDistance(72.0, 0.35);
 				currentAutonState = MOVE_DISTANCE;
@@ -95,8 +106,6 @@ public class AutonSupervisor {
 				Drivetrain.zeroGyro();
 				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
 				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-				//Drivetrain.setMoveDistance(37.0, Constants.AUTON_THROTTLE_VALUE);
-				//currentAutonState = MOVE_DISTANCE;
 			}
 			else{
 				currentAutonState = STOP;
@@ -109,75 +118,39 @@ public class AutonSupervisor {
 	}
 	
 	private void stateActionMoveDistance(){
-		if((selectedAutonRoutine == CROSS_BASELINE)  ||
-		   (selectedAutonRoutine == PLACE_CENTER_GEAR)||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)||
-		   (selectedAutonRoutine == PLACE_LEFT_GEAR)){
-			if(!Drivetrain.isMovingDistance()){
-				//Move is complete, go to next state
-				if(selectedAutonRoutine == PLACE_CENTER_GEAR){
-					//Drivetrain.setCenterVisionTarget();
-					//selectedAutonRoutine = CENTER_TARGET;
-					GearIntake.commandGearEject(true);
-					setAutonDelay(500);
-					currentAutonState = DELAY_AFTER_GEAR;
-				}
-				else if(selectedAutonRoutine == PLACE_RIGHT_GEAR){
-					Drivetrain.setTurnToTarget(-0.4);
-					currentAutonState = TURN_TO_TARGET;
-				}
-				else if(selectedAutonRoutine == PLACE_LEFT_GEAR){
-					Drivetrain.setTurnToTarget(0.4);
-					currentAutonState = TURN_TO_TARGET;
-				}
-				else
-				{
-					//CROSS BASELINE
-					currentAutonState = STOP;
-				}
+		if(!Drivetrain.isMovingDistance()){
+			//Move is complete, go to next state
+			if((selectedAutonRoutine == PLACE_RIGHT_GEAR) ||
+			   (selectedAutonRoutine == RED_GEAR_AND_BOILER))
+			{
+				Drivetrain.setTurnToTarget(-0.4, Constants.TURN_TO_TARGET_ANGLE);
+				currentAutonState = TURN_TO_TARGET;
 			}
-			else{
+			else if((selectedAutonRoutine == PLACE_LEFT_GEAR) ||
+			        (selectedAutonRoutine == BLUE_GEAR_AND_BOILER))
+			{
+				Drivetrain.setTurnToTarget(0.4, Constants.TURN_TO_TARGET_ANGLE);
+				currentAutonState = TURN_TO_TARGET;
+			}
+			else
+			{
+				//CROSS BASELINE
+				currentAutonState = STOP;
+			}
+		}else{
 				//Do nothing and wait for move to complete
-			}
 		}
-		else{
-			//Should never get here
-			currentAutonState = STOP;
-		}
-	}
-	
-	private void stateActionCenterTarget(){
-		if((!Drivetrain.isCenteringVisionTarget()) &&
-		   (Drivetrain.isVisionTargetCentered())){
-			//Target is centered
-			//Drivetrain.setMoveToVisionTarget(50.0, Constants.AUTON_THROTTLE_VALUE);
-			//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-			currentAutonState = STOP;
-		}else if((!Drivetrain.isCenteringVisionTarget()) &&
-				 (!Drivetrain.isVisionTargetCentered())){
-			//Target was never found or lost
-			currentAutonState = STOP;
-		}
-		else{
-			//Still centering target
-		}	
 	}
 	
 	private void stateActionMoveDistanceTrackTarget(){
-		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
-		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
-			
-			if(!Drivetrain.isMovingToVisionTarget()){
-				GearIntake.commandGearEject(true);
-				setAutonDelay(500);
-				currentAutonState = DELAY_AFTER_GEAR;
-			}
-			else{
-				//Do nothing and wait
-			}
-				
+		if(!Drivetrain.isMovingToVisionTarget()){
+			GearIntake.commandGearEject(true);
+			setAutonDelay(500);
+			currentAutonState = DELAY_AFTER_GEAR;
 		}
+		else{
+			//Do nothing and wait
+		}			
 	}
 	
 	private void stateActionTurnToTarget(){
@@ -185,8 +158,6 @@ public class AutonSupervisor {
 		   (selectedAutonRoutine == PLACE_RIGHT_GEAR)){
 			
 			if(!Drivetrain.isTurningToVisionTarget()){
-				//Drivetrain.setMoveToVisionTarget(0.20);
-				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 				setAutonDelay(500);
 				currentAutonState = DELAY_AFTER_TURN;
 			  }
@@ -199,102 +170,93 @@ public class AutonSupervisor {
 	
 	private void stateActionDelayAfterGear()
 	{
-		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
-		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
-		{
-			
-			if(autonDelayCount <= 20){
-				autonDelayCount = 0;
-				GearIntake.commandGearEject(false);
-				Drivetrain.setMoveDistance(-30, -0.45);
-				Drivetrain.zeroGyro();
-				currentAutonState = BACK_UP;
-			}
-			else
-			{
-				autonDelayCount = autonDelayCount-20; 
-			}
+		if(autonDelayCount <= 20){
+			autonDelayCount = 0;
+			GearIntake.commandGearEject(false);
+			Drivetrain.zeroGyro();
+			Drivetrain.setMoveDistance(-30, -0.45);
+			currentAutonState = BACK_UP;
 		}
 		else
 		{
-			currentAutonState = STOP;
+			autonDelayCount = autonDelayCount-20; 
 		}
 	}
 	
 	private void stateActionDelayAfterTurn()
 	{
-		if((selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
-		{
-			
-			if(autonDelayCount <= 20){
-				autonDelayCount = 0;
-				Drivetrain.setMoveToVisionTarget(65.0, 0.30);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-			}
-			else
-			{
-				autonDelayCount = autonDelayCount-20; 
-			}
+		if(autonDelayCount <= 20){
+			autonDelayCount = 0;
+			Drivetrain.setMoveToVisionTarget(65.0, 0.30);
+			currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 		}
 		else
 		{
-			currentAutonState = STOP;
-		}
-	}
-	
-	private void stateActionDelayAfterCenter()
-	{
-		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
-		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
-		{
-			
-			if(autonDelayCount <= 20){
-				autonDelayCount = 0;
-				Drivetrain.setMoveToVisionTarget(36.0, 0.20);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-			}
-			else
-			{
-				autonDelayCount = autonDelayCount-20; 
-			}
-		}
-		else
-		{
-			currentAutonState = STOP;
-		}
-	}
-	
-	private void stateActionDelayAfterMove()
-	{
-		if((selectedAutonRoutine == PLACE_CENTER_GEAR) ||
-		   (selectedAutonRoutine == PLACE_LEFT_GEAR)   ||
-		   (selectedAutonRoutine == PLACE_RIGHT_GEAR))
-		{
-			
-			if(autonDelayCount <= 20){
-				autonDelayCount = 0;
-				Drivetrain.setMoveToVisionTarget(36.0, 0.20);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-			}
-			else
-			{
-				autonDelayCount = autonDelayCount-20; 
-			}
-		}
-		else
-		{
-			currentAutonState = STOP;
+			autonDelayCount = autonDelayCount-20; 
 		}
 	}
 	
 	private void stateActionBackUp(){
 		if(!Drivetrain.isMovingDistance()){
+			
 			GearIntake.commandGearEject(false);
+			
+			if (selectedAutonRoutine == RED_GEAR_AND_BOILER)
+			{
+				Drivetrain.setTurnToTarget(0.4, Constants.TURN_TO_BOILER_ANGLE);
+				currentAutonState = TURN_TO_BOILER;
+			}
+			else if (selectedAutonRoutine == BLUE_GEAR_AND_BOILER)
+			{			
+				Drivetrain.setTurnToTarget(-0.4, Constants.TURN_TO_BOILER_ANGLE);
+				currentAutonState = TURN_TO_BOILER;
+			}
+			else
+			{
+				//Center Gear, Left Gear, or Right Gear
+				currentAutonState = STOP;
+			}
+			
+		}
+		else
+		{
+			//Wait for move to complete
+		}
+	}
+	
+	private void stateActionTurnToBoiler(){
+		if(!Drivetrain.isTurningToVisionTarget())
+		{
+			setAutonDelay(500);
+			currentAutonState = TURN_TO_BOILER_DELAY;
+		}
+		else{
+			//Do nothing and wait
+		}							
+	}
+	
+	private void stateActionTurnToBoilerDelay()
+	{
+		if(autonDelayCount <= 20){
+			autonDelayCount = 0;
+			Drivetrain.setMoveDistance(-48.0, -0.30);
+			currentAutonState = MOVE_TO_BOILER;
+		}
+		else
+		{
+			autonDelayCount = autonDelayCount-20; 
+		}
+	}
+	
+	private void stateActionMoveToBoiler(){
+		if(!Drivetrain.isMovingDistance()){
+			Fuel.commandFuelDumpSolenoid(true);
 			currentAutonState = STOP;
 		}
+		else{
+			//Wait for move to complete
+		}
+		
 	}
 	
 	private void stateActionStop(){

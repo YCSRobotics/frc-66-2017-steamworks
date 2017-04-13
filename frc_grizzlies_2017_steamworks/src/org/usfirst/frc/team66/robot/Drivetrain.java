@@ -370,6 +370,13 @@ public class Drivetrain {
 		targetTurn = turn;
 	}
 	
+	public static void setDrivetrainBraking(boolean command){
+		leftMasterMotor.enableBrakeMode(command);
+		leftSlaveMotor.enableBrakeMode(command);
+		rightMasterMotor.enableBrakeMode(command);
+		rightSlaveMotor.enableBrakeMode(command);
+	}
+	
 	public static boolean isMovingDistance(){
 		return isMovingDistance;
 	}

@@ -1,6 +1,7 @@
 package org.usfirst.frc.team66.robot;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 
 public class Lights {
 	
@@ -11,7 +12,17 @@ public class Lights {
 	}
 	
 	public void updateLights(){
+		boolean sensor;
 		
+		sensor = GearIntake.getDebouncedGearSensor();
+		
+		if(sensor){
+			lights.set(Value.kForward);
+		}
+		else
+		{
+			lights.set(Value.kOff);
+		}
 	}
 	
 

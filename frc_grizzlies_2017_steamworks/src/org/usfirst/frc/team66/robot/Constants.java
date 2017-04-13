@@ -115,6 +115,7 @@ public class Constants {
 	public static final double GEAR_EJECT_SPEED = -0.75;
 	
 	public static final DigitalInput GEAR_SENSOR = new DigitalInput(4);
+	public static final int GEAR_SENSOR_DEBOUNCE_TIME = 500;
 	
 	//Solenoids
 	public final static Solenoid SHIFT_SOLENOID        = new Solenoid(0);

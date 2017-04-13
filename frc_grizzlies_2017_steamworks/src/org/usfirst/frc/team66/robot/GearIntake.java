@@ -16,9 +16,14 @@ public class GearIntake {
 	
 	private static DigitalInput gearSensor = Constants.GEAR_SENSOR;
 	
+	private static boolean gearSensorPrev;
+	private static boolean gearSensorDebounced;
+	
+	private static int gearSensorDebounceCount = 0;
+	
 	private boolean isIntakeLowered;
 	private boolean isRaiseIntakePressed;
-	
+
 	//Auto Intake States
 	final static int IDLE 	  = 0;
 	final static int LOADING  = 1;
@@ -48,8 +53,10 @@ public class GearIntake {
 			gearIntakeMotor.set(0.0);
 		}
 		
-		SmartDashboard.putBoolean("Gear Sensor State", gearSensor.get());
+		debounceGearSensor();
 		
+		SmartDashboard.putBoolean("Raw Gear Sensor", gearSensor.get());
+		SmartDashboard.putBoolean("Debounced Gear Sensor", gearSensorDebounced);
 	}
 	
 	private void processAutoIntakeEvent(int event){
@@ -103,6 +110,31 @@ public class GearIntake {
 		else{
 			//Do nothing, button is still pressed
 		}
+	}
+	
+	private void debounceGearSensor(){	
+		boolean raw_sensor_input;
+		
+		raw_sensor_input = gearSensor.get();
+		
+		if(raw_sensor_input != gearSensorPrev){
+			//Detect change in sensor state		
+			gearSensorPrev = raw_sensor_input;
+			
+			gearSensorDebounceCount = Constants.GEAR_SENSOR_DEBOUNCE_TIME;
+		}
+		else if(gearSensorDebounceCount >= 20){
+			//Decrement the counter
+			gearSensorDebounceCount--;
+		}
+		else{
+			//Timer expired
+			gearSensorDebounced = raw_sensor_input;
+		}	
+	}
+	
+	public static boolean getDebouncedGearSensor(){
+		return gearSensorDebounced;
 	}
 	
 	public static void commandGearEject(boolean command){

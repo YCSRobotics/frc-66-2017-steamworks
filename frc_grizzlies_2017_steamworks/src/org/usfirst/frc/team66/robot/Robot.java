@@ -20,6 +20,8 @@ public class Robot extends IterativeRobot {
 	final String placeCenterGearAuto = "Place Center Gear";
 	final String placeRightGearAuto = "Place Right Gear";
 	final String placeLeftGearAuto = "Place Left Gear";
+	final String redGearAndFuel = "Red Gear and Fuel";
+	final String blueGearAndFuel = "Blue Gear and Fuel";
 	
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
@@ -41,6 +43,8 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Place Center Gear", placeCenterGearAuto);
 		chooser.addObject("Place Right Gear", placeRightGearAuto);
 		chooser.addObject("Place Left Gear", placeLeftGearAuto);
+		chooser.addObject("Red Side Gear & Fuel", redGearAndFuel);
+		chooser.addObject("Blue Side Gear & Fuel", blueGearAndFuel);
 		
 		SmartDashboard.putData("Auto choices", chooser);
 		
@@ -92,6 +96,12 @@ public class Robot extends IterativeRobot {
 			break;
 		case placeLeftGearAuto:
 			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.PLACE_LEFT_GEAR);
+			break;
+		case redGearAndFuel:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.RED_GEAR_AND_BOILER);
+			break;
+		case blueGearAndFuel:
+			AUTON_SUPERVISOR.setSelectedAutonRoutine(AUTON_SUPERVISOR.BLUE_GEAR_AND_BOILER);
 			break;
 		case defaultAuto:
 		default:

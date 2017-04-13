@@ -49,6 +49,9 @@ public class GearIntake {
 		else if(isIntakeGearButtonPressed()){
 			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_INTAKE_SPEED);
 		}
+		else if(controller.getRawButton(Constants.Y_BUTTON)){
+			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.FUEL_ROLL_OUT_SPEED);
+		}
 		else{
 			gearIntakeMotor.set(0.0);
 		}

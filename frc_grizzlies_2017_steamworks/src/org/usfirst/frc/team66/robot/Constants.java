@@ -29,6 +29,8 @@ public class Constants {
 	public static final int BACK_BUTTON   = 7;//Invert
 	public static final int START_BUTTON  = 8;
 	public static final int A_BUTTON      = 1;//Drive Straight
+	public static final int B_BUTTON      = 2;
+	public static final int X_BUTTON      = 3;
 	public static final int Y_BUTTON      = 4;
 	public static final int RIGHT_BUMPER  = 6;//Climb
 	
@@ -113,6 +115,7 @@ public class Constants {
 	
 	public static final double GEAR_INTAKE_SPEED = 1.0;
 	public static final double GEAR_EJECT_SPEED = -0.75;
+	public static final double FUEL_ROLL_OUT_SPEED = -0.50;
 	
 	public static final DigitalInput GEAR_SENSOR = new DigitalInput(4);
 	public static final int GEAR_SENSOR_DEBOUNCE_TIME = 500;
@@ -131,6 +134,6 @@ public class Constants {
 	
 	//Math Constants
 	public static final double CAMERA_WIDTH = 640;
-	public static final double FIELD_OF_VIEW = 67;
+	public static final double FIELD_OF_VIEW = 54;
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

@@ -43,11 +43,14 @@ public class GearIntake {
 		
 		//intakeSpeed = getGearInOutSpeed();
 		
-		if(controller.getRawButton(Constants.A_BUTTON)){
+		if(controller.getRawButton(Constants.B_BUTTON)){
 			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_EJECT_SPEED);
 		}
 		else if(isIntakeGearButtonPressed()){
 			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_INTAKE_SPEED);
+		}
+		else if(controller.getRawButton(Constants.Y_BUTTON)){
+			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.FUEL_ROLL_OUT_SPEED);
 		}
 		else{
 			gearIntakeMotor.set(0.0);
@@ -73,7 +76,7 @@ public class GearIntake {
 	}
 	
 	private boolean isIntakeGearButtonPressed(){
-		if(controller.getRawAxis(Constants.RIGHT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD){
+		if(controller.getRawButton(Constants.A_BUTTON)){
 			return true;
 		}
 		else{

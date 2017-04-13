@@ -27,11 +27,21 @@ public class Climber {
 			climberLatch.set(false);
 		}
 		
-		if(controller.getRawButton(Constants.RIGHT_BUMPER)){
+		if(isClimbButtonPressed()){
 			climbMotor.set(1.0);
 		}
 		else{
 			climbMotor.set(0.0);
+		}
+	}
+	
+	private boolean isClimbButtonPressed(){
+		if((controller.getRawButton(Constants.RIGHT_BUMPER)) ||
+		   (controller.getRawAxis(Constants.RIGHT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD)){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 

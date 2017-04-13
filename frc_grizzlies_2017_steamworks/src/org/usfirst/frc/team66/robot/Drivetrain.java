@@ -243,7 +243,7 @@ public class Drivetrain {
 		double v;
 		v = controller.getRawAxis(Constants.RIGHT_STICK_X);
 		
-		return(v);
+		return(v >= 0 ? (v*v):-(v*v));
 		/*if(getThrottleInput() < 0){
 			return(Math.abs(v) > Constants.DEAD_ZONE_LIMIT ? -(v) : 0.0);
 		}else{

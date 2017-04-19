@@ -6,10 +6,10 @@ from networktables import NetworkTables
 #set networktable info
 logging.basicConfig(level=logging.DEBUG)
 NetworkTables.setClientMode()
-NetworkTables.initialize(server='10.4.70.2')
+NetworkTables.initialize(server='10.0.66.2')
 Table = NetworkTables.getTable("Table")
 
-camera = cv2.VideoCapture('http://10.4.70.11/mjpg/video.mjpg') 
+camera = cv2.VideoCapture('http://10.0.66.11/mjpg/video.mjpg') 
 #camera = cv2.VideoCapture(0) #switch from IP to USB
 
 while (True):

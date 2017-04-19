@@ -7,7 +7,7 @@ from networktables import NetworkTables
 logging.basicConfig(level=logging.DEBUG)
 NetworkTables.setClientMode()
 NetworkTables.initialize(server='10.0.66.2')
-Table = NetworkTables.getTable("Table")
+Table = NetworkTables.getTable("SmartDashboard")
 
 camera = cv2.VideoCapture('http://10.0.66.11/mjpg/video.mjpg') 
 #camera = cv2.VideoCapture(0) #switch from IP to USB
@@ -82,8 +82,8 @@ while (True):
                  #put values to networktable
                  Table.putNumber("CenterOfTargetCoords", CenterOfTargetCoords)
                  Table.putNumber("CenterOfTarget", CenterOfTarget)
-                 Table.putNumberArray("Rect1", Rect1)
-                 Table.putNumberArray("Rect2", Rect2)
+                 #Table.putNumberArray("Rect1", Rect1)
+                 #Table.putNumberArray("Rect2", Rect2)
                  Table.putBoolean("NoContoursFound", False)
                  
              else: #contour not in aspect ratio

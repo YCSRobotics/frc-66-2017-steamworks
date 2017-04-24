@@ -79,7 +79,7 @@ public class GearIntake {
 	}
 	
 	private boolean isIntakeGearButtonPressed(){
-		if(controller.getRawAxis(Constants.RIGHT_TRIGGER) >= Constants.TRIGGER_ACTIVE_THRESHOLD){
+		if(controller.getRawButton(Constants.A_BUTTON)){
 			return true;
 		}
 		else{

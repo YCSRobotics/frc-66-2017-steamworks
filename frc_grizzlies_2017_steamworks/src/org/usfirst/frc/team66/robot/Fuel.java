@@ -29,7 +29,7 @@ public class Fuel {
 	}
 	
 	private boolean isUnloadButtonPressed(){
-		return(controller.getRawButton(Constants.Y_BUTTON));
+		return(controller.getRawButton(Constants.X_BUTTON));
 	}
 	
 }

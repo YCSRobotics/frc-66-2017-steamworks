@@ -99,8 +99,8 @@ public class AutonSupervisor {
 					(selectedAutonRoutine == RED_GEAR_AND_BOILER) ||
 					(selectedAutonRoutine == BLUE_GEAR_AND_BOILER)){
 				Drivetrain.zeroGyro();
-				Drivetrain.setDrivetrainBraking(true);
-				Drivetrain.setMoveDistance(72.0, 0.45);
+				//Drivetrain.setDrivetrainBraking(true);
+				Drivetrain.setMoveDistance(72.0, 0.35);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
@@ -146,7 +146,7 @@ public class AutonSupervisor {
 	private void stateActionMoveDistanceTrackTarget(){
 		if(!Drivetrain.isMovingToVisionTarget()){
 			GearIntake.commandGearEject(true);
-			setAutonDelay(500);
+			setAutonDelay(750);
 			currentAutonState = DELAY_AFTER_GEAR;
 		}
 		else{
@@ -168,7 +168,7 @@ public class AutonSupervisor {
 	{
 		if(autonDelayCount <= 20){
 			autonDelayCount = 0;
-			GearIntake.commandGearEject(false);
+			//GearIntake.commandGearEject(false);
 			Drivetrain.zeroGyro();
 			Drivetrain.setMoveDistance(-30, -0.45);
 			currentAutonState = BACK_UP;
@@ -210,7 +210,8 @@ public class AutonSupervisor {
 			else
 			{
 				//Center Gear, Left Gear, or Right Gear
-				Drivetrain.setDrivetrainBraking(false);
+				//Drivetrain.setDrivetrainBraking(false);
+				GearIntake.commandGearEject(false);
 				currentAutonState = STOP;
 			}
 			

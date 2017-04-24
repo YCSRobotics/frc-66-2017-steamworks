@@ -110,6 +110,9 @@ public class Robot extends IterativeRobot {
 		}
 		
 		System.out.println("Auto selected: " + autoSelected);
+		
+		//Enable Gear Sensor Supply
+		GEAR_INTAKE.enableGearSensor(true);
 	}
 
 	/**
@@ -122,7 +125,12 @@ public class Robot extends IterativeRobot {
 		DRIVETRAIN.updateDrivetrainAuton();
 		
 	}
-
+	
+	public void teleopInit() {
+		//Enable Gear Sensor Supply
+		GEAR_INTAKE.enableGearSensor(true);
+	}
+	
 	/**
 	 * This function is called periodically during operator control
 	 */
@@ -131,7 +139,7 @@ public class Robot extends IterativeRobot {
 		
 		DRIVETRAIN.updateDrivetrainTeleop();
 		GEAR_INTAKE.updateGearIntakeTelopPeriodic();
-		FUEL.updateFuelTelop();
+		//FUEL.updateFuelTelop();
 		CLIMBER.updateClimberTeleop();
 		//NetworkTables.getPiValues();
 		

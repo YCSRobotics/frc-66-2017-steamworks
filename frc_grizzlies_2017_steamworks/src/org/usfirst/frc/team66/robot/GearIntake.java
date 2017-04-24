@@ -13,8 +13,10 @@ public class GearIntake {
 	private static Talon gearIntakeMotor = Constants.GEAR_INTAKE_MOTOR;
 	
 	private static Solenoid lowerIntakeSolenoid = Constants.LOWER_INTAKE_SOLENOID;
+	private static Solenoid gearSensorSupply = Constants.GEAR_SENSOR_SUPPLY;
 	
-	private static DigitalInput gearSensor = Constants.GEAR_SENSOR;
+	private static DigitalInput gearSensor1 = Constants.GEAR_SENSOR_1;
+	private static DigitalInput gearSensor2 = Constants.GEAR_SENSOR_2;
 	
 	private static boolean gearSensorPrev;
 	private static boolean gearSensorDebounced;
@@ -58,7 +60,8 @@ public class GearIntake {
 		
 		debounceGearSensor();
 		
-		SmartDashboard.putBoolean("Raw Gear Sensor", gearSensor.get());
+		SmartDashboard.putBoolean("Raw Gear Sensor 1", gearSensor1.get());
+		SmartDashboard.putBoolean("Raw Gear Sensor 2", gearSensor2.get());
 		SmartDashboard.putBoolean("Debounced Gear Sensor", gearSensorDebounced);
 	}
 	
@@ -118,7 +121,7 @@ public class GearIntake {
 	private void debounceGearSensor(){	
 		boolean raw_sensor_input;
 		
-		raw_sensor_input = gearSensor.get();
+		raw_sensor_input = gearSensor1.get();
 		
 		if(raw_sensor_input != gearSensorPrev){
 			//Detect change in sensor state		
@@ -148,6 +151,10 @@ public class GearIntake {
 		{
 			gearIntakeMotor.set(0.0);
 		}
+	}
+	
+	public static void enableGearSensor(boolean enable){
+		gearSensorSupply.set(enable);
 	}
 	
 

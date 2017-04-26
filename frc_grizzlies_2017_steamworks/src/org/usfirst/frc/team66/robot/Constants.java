@@ -134,6 +134,6 @@ public class Constants {
 	
 	//Math Constants
 	public static final double CAMERA_WIDTH = 640;
-	public static final double FIELD_OF_VIEW = 54;
+	public static final double FIELD_OF_VIEW = 55;
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 }

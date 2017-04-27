@@ -88,10 +88,10 @@ public class GearIntake {
 			processAutoIntakeEvent(AUTO_INTAKE_RELEASED);
 		}
 		
-		updateLights();
+		//updateLights();
 		//debounceGearSensor();
 		
-		updateAutoIntakeState();
+		//updateAutoIntakeState();
 		
 		SmartDashboard.putBoolean("Raw Gear Sensor 1", gearSensor1.get());
 		SmartDashboard.putBoolean("Raw Gear Sensor 2", gearSensor2.get());

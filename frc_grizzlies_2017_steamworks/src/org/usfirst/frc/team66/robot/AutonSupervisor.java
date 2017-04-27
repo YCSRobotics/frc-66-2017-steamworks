@@ -107,7 +107,7 @@ public class AutonSupervisor {
 				Drivetrain.zeroGyro();
 				//Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
 				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
-				Drivetrain.setMoveToVisionTarget(12.0, Constants.AUTON_THROTTLE_VALUE);
+				Drivetrain.setMoveDistance(12.0, Constants.AUTON_THROTTLE_VALUE);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else{

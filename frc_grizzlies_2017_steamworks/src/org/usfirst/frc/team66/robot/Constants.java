@@ -32,6 +32,7 @@ public class Constants {
 	public static final int B_BUTTON      = 2;
 	public static final int X_BUTTON      = 3;
 	public static final int Y_BUTTON      = 4;
+	public static final int LEFT_BUMPER   = 5;
 	public static final int RIGHT_BUMPER  = 6;//Climb
 	
 	public static final double DEAD_ZONE_LIMIT = 0.3;
@@ -117,7 +118,8 @@ public class Constants {
 	public static final double GEAR_EJECT_SPEED = -0.75;
 	public static final double FUEL_ROLL_OUT_SPEED = -0.50;
 	
-	public static final DigitalInput GEAR_SENSOR = new DigitalInput(4);
+	public static final DigitalInput GEAR_SENSOR_1 = new DigitalInput(4);
+	public static final DigitalInput GEAR_SENSOR_2 = new DigitalInput(5);
 	public static final int GEAR_SENSOR_DEBOUNCE_TIME = 500;
 	
 	//Solenoids
@@ -125,6 +127,7 @@ public class Constants {
 	public final static Solenoid LOWER_INTAKE_SOLENOID = new Solenoid(1);
 	public final static Solenoid CLIMB_LATCH_SOLENOID  = new Solenoid(2);
 	public final static Solenoid FUEL_UNLOAD_SOLENOID  = new Solenoid(3);
+	public final static Solenoid GEAR_SENSOR_SUPPLY	   = new Solenoid(7);
 	
 	//Relays
 	public final static Relay LIGHT_RELAY = new Relay(0);

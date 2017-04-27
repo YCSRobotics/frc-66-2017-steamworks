@@ -99,14 +99,16 @@ public class AutonSupervisor {
 					(selectedAutonRoutine == RED_GEAR_AND_BOILER) ||
 					(selectedAutonRoutine == BLUE_GEAR_AND_BOILER)){
 				Drivetrain.zeroGyro();
-				//Drivetrain.setDrivetrainBraking(true);
-				Drivetrain.setMoveDistance(72.0, 0.35);
+				Drivetrain.setDrivetrainBraking(true);
+				Drivetrain.setMoveDistance(72.0, 0.45);
 				currentAutonState = MOVE_DISTANCE;
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
 				Drivetrain.zeroGyro();
-				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				//Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
+				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				Drivetrain.setMoveToVisionTarget(12.0, Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE;
 			}
 			else{
 				currentAutonState = STOP;
@@ -133,6 +135,11 @@ public class AutonSupervisor {
 				Drivetrain.setTurnToTarget(0.4, Constants.TURN_TO_TARGET_ANGLE);
 				currentAutonState = TURN_TO_TARGET;
 			}
+			else if(selectedAutonRoutine == PLACE_CENTER_GEAR)
+			{
+				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+			}
 			else
 			{
 				//CROSS BASELINE
@@ -146,7 +153,7 @@ public class AutonSupervisor {
 	private void stateActionMoveDistanceTrackTarget(){
 		if(!Drivetrain.isMovingToVisionTarget()){
 			GearIntake.commandGearEject(true);
-			setAutonDelay(750);
+			setAutonDelay(500);
 			currentAutonState = DELAY_AFTER_GEAR;
 		}
 		else{
@@ -168,7 +175,7 @@ public class AutonSupervisor {
 	{
 		if(autonDelayCount <= 20){
 			autonDelayCount = 0;
-			//GearIntake.commandGearEject(false);
+			GearIntake.commandGearEject(false);
 			Drivetrain.zeroGyro();
 			Drivetrain.setMoveDistance(-30, -0.45);
 			currentAutonState = BACK_UP;
@@ -210,8 +217,7 @@ public class AutonSupervisor {
 			else
 			{
 				//Center Gear, Left Gear, or Right Gear
-				//Drivetrain.setDrivetrainBraking(false);
-				GearIntake.commandGearEject(false);
+				Drivetrain.setDrivetrainBraking(false);
 				currentAutonState = STOP;
 			}
 			

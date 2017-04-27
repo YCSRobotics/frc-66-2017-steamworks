@@ -14,7 +14,7 @@ public class Lights {
 	public void updateLights(){
 		boolean sensor;
 		
-		sensor = GearIntake.getDebouncedGearSensor();
+		sensor = GearIntake.getGearSensorInput();
 		
 		if(sensor){
 			lights.set(Value.kForward);

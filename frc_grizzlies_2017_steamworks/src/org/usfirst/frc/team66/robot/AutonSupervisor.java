@@ -105,8 +105,10 @@ public class AutonSupervisor {
 			}
 			else if(selectedAutonRoutine == PLACE_CENTER_GEAR){
 				Drivetrain.zeroGyro();
-				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
-				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				//Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
+				//currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
+				Drivetrain.setMoveToVisionTarget(12.0, Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE;
 			}
 			else{
 				currentAutonState = STOP;
@@ -132,6 +134,11 @@ public class AutonSupervisor {
 			{
 				Drivetrain.setTurnToTarget(0.4, Constants.TURN_TO_TARGET_ANGLE);
 				currentAutonState = TURN_TO_TARGET;
+			}
+			else if(selectedAutonRoutine == PLACE_CENTER_GEAR)
+			{
+				Drivetrain.setMoveToVisionTarget(110.0, Constants.AUTON_THROTTLE_VALUE);
+				currentAutonState = MOVE_DISTANCE_TRACK_TARGET;
 			}
 			else
 			{

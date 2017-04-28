@@ -82,7 +82,8 @@ public class Drivetrain {
 		
 		if(isMovingDistance){
 			//Move distance without tracking vision target
-			distance_error = targetDistance - getAverageDistance();
+			//distance_error = targetDistance - getAverageDistance();
+			distance_error = targetDistance - getMaxEncoderDistance();
 			
 			if(Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD){
 				//Robot has reached target
@@ -97,7 +98,8 @@ public class Drivetrain {
 		}
 		else if(isMovingToVisionTarget){
 			//Move forward while tracking vision target
-			distance_error = targetDistance - getAverageDistance();
+			//distance_error = targetDistance - getAverageDistance();
+			distance_error = targetDistance - getMaxEncoderDistance();
 			
 			if((PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD) ||
 			   (Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD)){
@@ -417,6 +419,10 @@ public class Drivetrain {
 			return false;
 		}*/
 		return controller.getRawButton(Constants.A_BUTTON);
+	}
+	
+	public static double getMaxEncoderDistance(){
+		return Math.max(Math.abs(leftEncoder.getDistance()), Math.abs(rightEncoder.getDistance()));
 	}
 	
 }

@@ -158,6 +158,7 @@ public class GearIntake {
 	public static void commandGearEject(boolean command){
 		if(command){
 			gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * Constants.GEAR_EJECT_SPEED);
+			//gearIntakeMotor.set(Constants.GEAR_INTAKE_MOTOR_DIRECTION * -0.40);
 		}
 		else
 		{

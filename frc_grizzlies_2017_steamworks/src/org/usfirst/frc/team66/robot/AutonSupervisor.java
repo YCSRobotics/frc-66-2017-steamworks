@@ -151,10 +151,17 @@ public class AutonSupervisor {
 	}
 	
 	private void stateActionMoveDistanceTrackTarget(){
-		if(!Drivetrain.isMovingToVisionTarget()){
-			GearIntake.commandGearEject(true);
-			setAutonDelay(500);
-			currentAutonState = DELAY_AFTER_GEAR;
+		if(!Drivetrain.isMovingToVisionTarget())
+		{
+			if(Drivetrain.isTargetReached()){
+				GearIntake.commandGearEject(true);
+				setAutonDelay(500);
+				currentAutonState = DELAY_AFTER_GEAR;
+			}
+			else
+			{
+				currentAutonState = STOP;
+			}
 		}
 		else{
 			//Do nothing and wait

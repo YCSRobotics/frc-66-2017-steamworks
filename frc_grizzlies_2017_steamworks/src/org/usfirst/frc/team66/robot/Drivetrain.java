@@ -48,6 +48,7 @@ public class Drivetrain {
 	
 	private static boolean isCenteringVisionTarget = false;
 	private static boolean isTargetCentered = false;
+	private static boolean isTargetReached = false;
 	
 	private static int invalidTargetCount = 0;
 	
@@ -104,6 +105,13 @@ public class Drivetrain {
 			if((PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD) ||
 			   (Math.abs(distance_error) <= Constants.TARGET_DISTANCE_THRESHOLD)){
 			//Reached minimum target distance so stop
+				
+				if(PiMath.getTargetDistance() <= Constants.VISION_TARGET_THRESHOLD){
+					isTargetReached = true;
+				}
+				else{
+					isTargetReached = false;
+				}
 				targetThrottle = 0.0;
 				targetTurn     = 0.0;
 				isVisionTargetReached = true;
@@ -423,6 +431,10 @@ public class Drivetrain {
 	
 	public static double getMaxEncoderDistance(){
 		return Math.max(Math.abs(leftEncoder.getDistance()), Math.abs(rightEncoder.getDistance()));
+	}
+	
+	public static boolean isTargetReached(){
+		return isTargetReached;
 	}
 	
 }
